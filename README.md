@@ -19,9 +19,13 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
  - I welcome feedback! Please tell me if your camera works or not.
 
 
-### Cameras (not working; investigating)
+### Cameras (not working for now; investigating)
 
  - [Nikon D7200](https://github.com/puhitaku/mtplvcap/issues/2)
+
+
+### Cameras (unsupported)
+
  - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
 
 

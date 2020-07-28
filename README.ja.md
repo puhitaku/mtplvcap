@@ -22,6 +22,10 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 ### カメラ（現在動作せず・調査中）
 
  - [Nikon D7200](https://github.com/puhitaku/mtplvcap/issues/2)
+
+
+### カメラ（サポート外）
+
  - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
 
 
