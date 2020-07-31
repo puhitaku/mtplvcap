@@ -449,11 +449,84 @@ func (s *LVServer) startLiveView() error {
 	err := s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
-			return fmt.Errorf("failed to start live view: InvalidStatus (battery level is low?)")
+			log.LV.Error("failed to start live view (InvalidStatus). Investigating the reason...")
+			reason, err := s.readLiveViewProhibitCondition()
+			if err != nil {
+				return fmt.Errorf("failed to start live view and failed to investigate the reason: %s", err)
+			}
+			return fmt.Errorf("failed to start live view (reason: %s)", reason)
 		}
 		return fmt.Errorf("failed to start live view: %s", err)
 	}
 	return nil
+}
+
+func (s *LVServer) readLiveViewProhibitCondition() (string, error) {
+	// mtpLock must be locked by caller
+	var reasonRaw Uint32Value
+	err := s.dev.GetDevicePropValue(DPC_NIKON_LiveViewProhibitCondition, &reasonRaw)
+	if err != nil {
+		return "", fmt.Errorf("failed to read LiveViewProhibitCondition: %s", err)
+	}
+
+	switch s.bitScan(reasonRaw.Value) {
+	case -1:
+		return "(empty)", nil
+	case 0:
+		return "recording destination is the card", nil
+	case 2:
+		return "sequence error", nil
+	case 4:
+		return "button is fully pressed", nil
+	case 5:
+		return "aperture value is set by the lens", nil
+	case 6:
+		return "bulb error", nil
+	case 7:
+		return "during cleaning", nil
+	case 8:
+		return "insufficient battery", nil
+	case 9:
+		return "TTL error", nil
+	case 11:
+		return "non-CPU lens is mounted and the mode is not M", nil
+	case 12:
+		return "there are images which are recorded in SDRAM", nil
+	case 13:
+		return "the release mode is mirror-up", nil
+	case 14:
+		return "no card inserted", nil
+	case 15:
+		return "shot command is being processed", nil
+	case 16:
+		return "shooting in progress", nil
+	case 17:
+		return "overheated", nil
+	case 18:
+		return "card is protected", nil
+	case 19:
+		return "card error", nil
+	case 20:
+		return "card is not formatted", nil
+	case 21:
+		return "bulb error", nil
+	case 22:
+		return "the release mode is mirror-up and it is being processed", nil
+	case 24:
+		return "the lens is not extended", nil
+	default:
+		return "unknown reason", nil
+	}
+
+}
+
+func (*LVServer) bitScan(val uint32) int {
+	for i := 0; i < 64; i++ {
+		if val & (1 << i) > 0 {
+			return i
+		}
+	}
+	return -1
 }
 
 func (s *LVServer) endLiveView() error {

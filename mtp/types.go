@@ -96,6 +96,10 @@ type Uint16Array struct {
 	Values []uint16
 }
 
+type Uint32Value struct {
+	Value uint32
+}
+
 type Uint64Value struct {
 	Value uint64
 }
