@@ -446,7 +446,12 @@ func (s *LVServer) startLiveView() error {
 	s.mtpLock.Lock()
 	defer s.mtpLock.Unlock()
 
-	err := s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
+	err := s.dev.RunTransactionWithNoParams(OC_NIKON_DeviceReady)
+	if err != nil {
+		return fmt.Errorf("failed to start live view: the camera is not ready")
+	}
+
+	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
 			log.LV.Error("failed to start live view (InvalidStatus). Investigating the reason...")

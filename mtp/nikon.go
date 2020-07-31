@@ -4,6 +4,7 @@ package mtp
 
 const (
 	OC_NIKON_AfDrive = 0x90C1
+	OC_NIKON_DeviceReady = 0x90C8
 )
 
 const (
