@@ -459,7 +459,7 @@ func (s *LVServer) startLiveView() error {
 			if err != nil {
 				return fmt.Errorf("failed to start live view and failed to investigate the reason: %s", err)
 			}
-			return fmt.Errorf("failed to start live view (reason: %s)", reason)
+			return fmt.Errorf("failed to start live view, reason: %s", reason)
 		}
 		return fmt.Errorf("failed to start live view: %s", err)
 	}
