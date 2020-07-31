@@ -13,15 +13,19 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 
 ### Cameras (verified)
 
- - Nikon D5300
+ - Nikon D3200
  - Nikon D3300 (thanks [@unasuke](https://github.com/unasuke))
+ - Nikon D5300
+ - Nikon D610
  - Nikon D7000
+ - Nikon Z6
  - I welcome feedback! Please tell me if your camera works or not.
 
 
 ### Cameras (not working for now; investigating)
 
  - [Nikon D7200](https://github.com/puhitaku/mtplvcap/issues/2)
+ - [Nikon D5000](https://github.com/puhitaku/mtplvcap/issues/6)
 
 
 ### Cameras (unsupported)
