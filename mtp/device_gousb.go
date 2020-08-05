@@ -138,6 +138,30 @@ func (d *DeviceGoUSB) Open() error {
 	return nil
 }
 
+// ID is the manufacturer + product + serial
+func (d *DeviceGoUSB) ID() (ID, error) {
+	if !d.connected() {
+		return ID{}, fmt.Errorf("mtp: ID: device not open")
+	}
+
+	m, err := d.dev.Manufacturer()
+	if err != nil {
+		return ID{}, err
+	}
+
+	p, err := d.dev.Product()
+	if err != nil {
+		return ID{}, err
+	}
+
+	s, err := d.dev.SerialNumber()
+	if err != nil {
+		return ID{}, err
+	}
+
+	return ID{Manufacturer: m, Product: p, SerialNumber: s}, nil
+}
+
 func (d *DeviceGoUSB) sendReq(req *Container) error {
 	c := usbBulkContainer{
 		usbBulkHeader: usbBulkHeader{

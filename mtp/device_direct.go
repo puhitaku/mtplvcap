@@ -149,28 +149,45 @@ func (d *DeviceDirect) Open() error {
 	return nil
 }
 
+type ID struct {
+	Manufacturer string
+	Product string
+	SerialNumber string
+}
+
 // ID is the manufacturer + product + serial
-func (d *DeviceDirect) ID() (string, error) {
+func (d *DeviceDirect) ID() (ID, error) {
 	if d.h == nil {
-		return "", fmt.Errorf("mtp: ID: device not open")
+		return ID{}, fmt.Errorf("mtp: ID: device not open")
 	}
 
-	var ids []string
-	for _, b := range []byte{
-		d.devDescr.Manufacturer,
-		d.devDescr.Product,
-		d.devDescr.SerialNumber} {
-		s, err := d.h.GetStringDescriptorASCII(b)
+	readDesc := func(idx byte) (string, error) {
+		s, err := d.h.GetStringDescriptorASCII(idx)
 		if err != nil {
 			if d.Debug.USB {
 				log.USB.Debugf("getStringDescriptorASCII, err: %v", err)
 			}
 			return "", err
 		}
-		ids = append(ids, s)
+		return s, nil
 	}
 
-	return strings.Join(ids, " "), nil
+	m, err := readDesc(d.devDescr.Manufacturer)
+	if err != nil {
+		return ID{}, err
+	}
+
+	p, err := readDesc(d.devDescr.Product)
+	if err != nil {
+		return ID{}, err
+	}
+
+	s, err := readDesc(d.devDescr.SerialNumber)
+	if err != nil {
+		return ID{}, err
+	}
+
+	return ID{Manufacturer: m, Product: p, SerialNumber: s}, nil
 }
 
 func (d *DeviceDirect) sendReq(req *Container) error {

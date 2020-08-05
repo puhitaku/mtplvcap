@@ -37,6 +37,7 @@ type LVServer struct {
 	controlClients map[*websocket.Conn]bool
 	controlLock    sync.Mutex
 
+	model   Model
 	dev     Device
 	mtpLock sync.Mutex
 	dummy   bool
@@ -233,6 +234,27 @@ func (s *LVServer) Run() error {
 	defer func() {
 		_ = s.endLiveView()
 	}()
+
+	id, err := s.dev.ID()
+	if err != nil {
+		log.LV.Fatalf("failed to get device identity: %s", err)
+	}
+
+	log.LV.Debugf(
+		"manufacturer = %s, product = %s, serialnumber = %s",
+		id.Manufacturer,
+		id.Product,
+		id.SerialNumber,
+	)
+
+	model, ok := models.Match(id.Product)
+	if ok {
+		log.LV.Debugf("model matched: %s", model.Name)
+	} else {
+		log.LV.Debugf("model didn't match, falling back to the generic model", model.Name)
+		model = models.Generic()
+	}
+	s.model = model
 
 	isos, _, err := s.getISOs()
 	if err != nil {
@@ -672,6 +694,8 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 	var req, rep Container
 	buf := bytes.NewBuffer([]byte{})
 
+	hs := s.model.HeaderSize
+
 	req.Code = OC_NIKON_GetLiveViewImg
 	req.Param = []uint32{}
 	err := s.dev.RunTransaction(&req, &rep, buf, nil, 0)
@@ -680,14 +704,14 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 			return LiveView{}, fmt.Errorf("failed to obtain an image: live view is not activated")
 		}
 		return LiveView{}, fmt.Errorf("failed to obtain an image: %s", err)
-	} else if buf.Len() <= LVHeaderSize {
+	} else if buf.Len() <= hs {
 		return LiveView{}, fmt.Errorf("failed to obtain an image: the data has insufficient length")
 	}
 
 	raw := buf.Bytes()
 
 	lvr := liveViewRaw{}
-	err = binary.Read(bytes.NewReader(raw[8:LVHeaderSize]), binary.BigEndian, &lvr)
+	err = binary.Read(bytes.NewReader(raw[8:hs]), binary.BigEndian, &lvr)
 	if err != nil {
 		return LiveView{}, fmt.Errorf("failed to decode header")
 	}
@@ -726,7 +750,7 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 		AutoFocus:        af,
 		MovieTimeRemain:  remain,
 		Recording:        lvr.Recording == 1,
-		JPEG:             raw[LVHeaderSize:],
+		JPEG:             raw[hs:],
 	}, nil
 }
 
