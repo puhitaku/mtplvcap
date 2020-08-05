@@ -118,7 +118,7 @@ func (d *DeviceGoUSB) Open() error {
 			log.USB.Errorf("failed to get device info: %s", err)
 		}
 
-		if !strings.Contains(info.MTPExtension, "microsoft") {
+		if !strings.Contains(info.MTPExtension, "icrosoft") {
 			err = d.Close()
 			if err != nil {
 				log.USB.Errorf("failed to close device: %s", err)
