@@ -451,6 +451,32 @@ func (s *LVServer) startLiveView() error {
 		return fmt.Errorf("failed to start live view: the camera is not ready")
 	}
 
+	desc := DevicePropDesc{}
+	err = s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
+	if err != nil {
+		return fmt.Errorf("failed to get recording media: %s", err)
+	}
+
+	if currentMedia, ok := desc.CurrentValue.(int8); ok {
+		if currentMedia == int8(RecordingMediaCard) {
+			log.LV.Debug("current recording media: card")
+			log.LV.Debug("the recording media is the card. Switching it to the SDRAM.")
+			payload := struct {
+				Media RecordingMedia
+			}{
+				Media: RecordingMediaSDRAM,
+			}
+			err = s.dev.SetDevicePropValue(DPC_NIKON_RecordingMedia, &payload)
+			if err != nil {
+				return fmt.Errorf("failed to switch the record media to the SDRAM: %s", err)
+			}
+		} else {
+			log.LV.Debug("current recording media: SDRAM")
+		}
+	} else {
+		log.LV.Warning("unexpected format of the RecordingMedia property")
+	}
+
 	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {

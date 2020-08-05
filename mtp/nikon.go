@@ -5,6 +5,7 @@ package mtp
 const (
 	OC_NIKON_AfDrive = 0x90C1
 	OC_NIKON_DeviceReady = 0x90C8
+	DPC_NIKON_RecordingMedia = 0xD10B
 )
 
 const (
@@ -26,4 +27,11 @@ const (
 	AFNotActive AF = 0
 	AFFail      AF = 1
 	AFSuccess   AF = 2
+)
+
+type RecordingMedia int8
+
+const (
+	RecordingMediaCard RecordingMedia = 0
+	RecordingMediaSDRAM = 1
 )
