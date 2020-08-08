@@ -54,7 +54,7 @@ Notice: Snippets described here should run as-is and copy-and-pastable.
 
 **Important: For Windows, you have to replace a pre-installed MTP driver with a libusb driver.
 Your PC will no longer recognize the camera as an MTP device unless you re-install it manually.
-Continue with care.**
+Reverting back is super easy! Follow [the instruction](#revert-back-the-driver-if-necessary) to revert back the driver.**
 
 
 #### 1. Replace MTP driver
@@ -133,6 +133,26 @@ Continue with care.**
 1. Done!
     - The binary can be moved and redistributed easily
     - Copy `libusb-1.0.dll` from `C:\msys64\mingw64\bin\libusb-1.0.dll` and place the copy alongside `mtplvcap.exe` to launch it directly from Explorer
+
+
+#### Revert back the driver (if necessary)
+
+Generic MTP apps will no longer be able to communicate with cameras with replaced libusb driver.
+To revert it back, follow the instruction:
+
+(Screenshots are not available as I don't have English Windows. Sorry for inconvenience.)
+
+1. Right-click the Start Button and click ""
+
+1. Right-click your camera in the "libusb-win32 devices" section and click "Update driver"
+
+1. Click "Browse my computer for driver software"
+
+1. Click "Let me pick from a list of device drivers on my computer"
+
+1. Choose "MTP USB Device" in the list and click "Next >"
+
+1. It'll show "Windows has successfully updated your driver software" and it's done
 
 
 ### macOS
