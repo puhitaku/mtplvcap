@@ -16,6 +16,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
  - Nikon D3200
  - Nikon D3300 (thanks [@unasuke](https://github.com/unasuke) !)
  - Nikon D5300
+ - Nikon D5500 (thanks [@nasustim](https://github.com/nasustim) !)
  - Nikon D600 (thanks [@ohtayo](https://github.com/ohtayo) !)
  - Nikon D610
  - Nikon D7000
