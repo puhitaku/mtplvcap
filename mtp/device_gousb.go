@@ -118,7 +118,7 @@ func (d *DeviceGoUSB) Open() error {
 			log.USB.Errorf("failed to get device info: %s", err)
 		}
 
-		if !strings.Contains(info.MTPExtension, "microsoft") {
+		if !strings.Contains(info.MTPExtension, "icrosoft") {
 			err = d.Close()
 			if err != nil {
 				log.USB.Errorf("failed to close device: %s", err)
@@ -136,6 +136,30 @@ func (d *DeviceGoUSB) Open() error {
 	}
 
 	return nil
+}
+
+// ID is the manufacturer + product + serial
+func (d *DeviceGoUSB) ID() (ID, error) {
+	if !d.connected() {
+		return ID{}, fmt.Errorf("mtp: ID: device not open")
+	}
+
+	m, err := d.dev.Manufacturer()
+	if err != nil {
+		return ID{}, err
+	}
+
+	p, err := d.dev.Product()
+	if err != nil {
+		return ID{}, err
+	}
+
+	s, err := d.dev.SerialNumber()
+	if err != nil {
+		return ID{}, err
+	}
+
+	return ID{Manufacturer: m, Product: p, SerialNumber: s}, nil
 }
 
 func (d *DeviceGoUSB) sendReq(req *Container) error {

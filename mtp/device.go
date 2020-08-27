@@ -12,6 +12,7 @@ type Device interface {
 	GetDevicePropDesc(propCode uint16, info *DevicePropDesc) error
 	GetDevicePropValue(propCode uint32, dest interface{}) error
 	SetDevicePropValue(propCode uint32, src interface{}) error
+	ID() (ID, error)
 }
 
 type sessionData struct {

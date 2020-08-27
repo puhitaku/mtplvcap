@@ -1,6 +1,6 @@
 module github.com/puhitaku/mtplvcap
 
-go 1.12
+go 1.14
 
 require (
 	github.com/google/gousb v2.1.0+incompatible

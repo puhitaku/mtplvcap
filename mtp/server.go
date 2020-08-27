@@ -37,6 +37,7 @@ type LVServer struct {
 	controlClients map[*websocket.Conn]bool
 	controlLock    sync.Mutex
 
+	model   Model
 	dev     Device
 	mtpLock sync.Mutex
 	dummy   bool
@@ -233,6 +234,27 @@ func (s *LVServer) Run() error {
 	defer func() {
 		_ = s.endLiveView()
 	}()
+
+	id, err := s.dev.ID()
+	if err != nil {
+		log.LV.Fatalf("failed to get device identity: %s", err)
+	}
+
+	log.LV.Debugf(
+		"manufacturer = %s, product = %s, serialnumber = %s",
+		id.Manufacturer,
+		id.Product,
+		id.SerialNumber,
+	)
+
+	model, ok := models.Match(id.Product)
+	if ok {
+		log.LV.Debugf("model matched: %s", model.Name)
+	} else {
+		log.LV.Debugf("model didn't match, falling back to the generic model", model.Name)
+		model = models.Generic()
+	}
+	s.model = model
 
 	isos, _, err := s.getISOs()
 	if err != nil {
@@ -446,14 +468,118 @@ func (s *LVServer) startLiveView() error {
 	s.mtpLock.Lock()
 	defer s.mtpLock.Unlock()
 
-	err := s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
+	err := s.dev.RunTransactionWithNoParams(OC_NIKON_DeviceReady)
+	if err != nil {
+		return fmt.Errorf("failed to start live view: the camera is not ready")
+	}
+
+	desc := DevicePropDesc{}
+	err = s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
+	if err != nil {
+		return fmt.Errorf("failed to get recording media: %s", err)
+	}
+
+	if currentMedia, ok := desc.CurrentValue.(int8); ok {
+		if currentMedia == int8(RecordingMediaCard) {
+			log.LV.Debug("current recording media: card")
+			log.LV.Debug("the recording media is the card. Switching it to the SDRAM.")
+			payload := struct {
+				Media RecordingMedia
+			}{
+				Media: RecordingMediaSDRAM,
+			}
+			err = s.dev.SetDevicePropValue(DPC_NIKON_RecordingMedia, &payload)
+			if err != nil {
+				return fmt.Errorf("failed to switch the record media to the SDRAM: %s", err)
+			}
+		} else {
+			log.LV.Debug("current recording media: SDRAM")
+		}
+	} else {
+		log.LV.Warning("unexpected format of the RecordingMedia property")
+	}
+
+	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
-			return fmt.Errorf("failed to start live view: InvalidStatus (battery level is low?)")
+			log.LV.Error("failed to start live view (InvalidStatus). Investigating the reason...")
+			reason, err := s.readLiveViewProhibitCondition()
+			if err != nil {
+				return fmt.Errorf("failed to start live view and failed to investigate the reason: %s", err)
+			}
+			return fmt.Errorf("failed to start live view, reason: %s", reason)
 		}
 		return fmt.Errorf("failed to start live view: %s", err)
 	}
 	return nil
+}
+
+func (s *LVServer) readLiveViewProhibitCondition() (string, error) {
+	// mtpLock must be locked by caller
+	var reasonRaw Uint32Value
+	err := s.dev.GetDevicePropValue(DPC_NIKON_LiveViewProhibitCondition, &reasonRaw)
+	if err != nil {
+		return "", fmt.Errorf("failed to read LiveViewProhibitCondition: %s", err)
+	}
+
+	switch s.bitScan(reasonRaw.Value) {
+	case -1:
+		return "(empty)", nil
+	case 0:
+		return "recording destination is the card", nil
+	case 2:
+		return "sequence error", nil
+	case 4:
+		return "button is fully pressed", nil
+	case 5:
+		return "aperture value is set by the lens", nil
+	case 6:
+		return "bulb error", nil
+	case 7:
+		return "during cleaning", nil
+	case 8:
+		return "insufficient battery", nil
+	case 9:
+		return "TTL error", nil
+	case 11:
+		return "non-CPU lens is mounted and the mode is not M", nil
+	case 12:
+		return "there are images which are recorded in SDRAM", nil
+	case 13:
+		return "the release mode is mirror-up", nil
+	case 14:
+		return "no card inserted", nil
+	case 15:
+		return "shot command is being processed", nil
+	case 16:
+		return "shooting in progress", nil
+	case 17:
+		return "overheated", nil
+	case 18:
+		return "card is protected", nil
+	case 19:
+		return "card error", nil
+	case 20:
+		return "card is not formatted", nil
+	case 21:
+		return "bulb error", nil
+	case 22:
+		return "the release mode is mirror-up and it is being processed", nil
+	case 24:
+		return "the lens is not extended", nil
+	default:
+		return "unknown reason", nil
+	}
+
+}
+
+func (*LVServer) bitScan(val uint32) int {
+	for i := 0; i < 64; i++ {
+		if val & (1 << i) > 0 {
+			return i
+		}
+	}
+	return -1
 }
 
 func (s *LVServer) endLiveView() error {
@@ -568,6 +694,8 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 	var req, rep Container
 	buf := bytes.NewBuffer([]byte{})
 
+	hs := s.model.HeaderSize
+
 	req.Code = OC_NIKON_GetLiveViewImg
 	req.Param = []uint32{}
 	err := s.dev.RunTransaction(&req, &rep, buf, nil, 0)
@@ -576,14 +704,14 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 			return LiveView{}, fmt.Errorf("failed to obtain an image: live view is not activated")
 		}
 		return LiveView{}, fmt.Errorf("failed to obtain an image: %s", err)
-	} else if buf.Len() <= LVHeaderSize {
+	} else if buf.Len() <= hs {
 		return LiveView{}, fmt.Errorf("failed to obtain an image: the data has insufficient length")
 	}
 
 	raw := buf.Bytes()
 
 	lvr := liveViewRaw{}
-	err = binary.Read(bytes.NewReader(raw[8:LVHeaderSize]), binary.BigEndian, &lvr)
+	err = binary.Read(bytes.NewReader(raw[8:hs]), binary.BigEndian, &lvr)
 	if err != nil {
 		return LiveView{}, fmt.Errorf("failed to decode header")
 	}
@@ -622,7 +750,7 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 		AutoFocus:        af,
 		MovieTimeRemain:  remain,
 		Recording:        lvr.Recording == 1,
-		JPEG:             raw[LVHeaderSize:],
+		JPEG:             raw[hs:],
 	}, nil
 }
 
