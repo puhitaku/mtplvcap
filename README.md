@@ -363,6 +363,8 @@ Usage of ./mtplvcap:
     - Some cameras support disabling auto-off timer, while some does not.
         - For D5300, "Custom Setting Menu" -> "c Timers/AE lock" -> "Auto off timers" -> "Custom" -> "Live View" -> "30 min"
     - As a work-around, mtplvcap watches the shutter and opens it automatically when it's closed.
+ - D5000: incorrect frame dimension is reported in the controller
+    - Correct dimension is 640x426
  - Windows: on MinTTY, the process gets killed without graceful shut-down when you press Ctrl-C.
     - It will result in a fail of the next launch and might require you to re-plug the camera in.
     - It's a known behavior and is not a bug of mtplvcap.
