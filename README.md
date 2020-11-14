@@ -237,7 +237,7 @@ I strongly recommend you to compile by yourself for Linux distributions as Linux
 
     ```sh
     # For Debian/Ubuntu:
-    sudo apt install libusb-1.0.0
+    sudo apt install libusb-1.0-0
     ```
 
     ```sh
@@ -266,7 +266,7 @@ I strongly recommend you to compile by yourself for Linux distributions as Linux
 
     ```sh
     # For Debian/Ubuntu:
-    sudo apt install golang-go libusb-1.0.0-dev
+    sudo apt install golang-go libusb-1.0-0-dev
     ```
 
     ```sh
