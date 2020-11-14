@@ -82,7 +82,7 @@ jobs:
           name: Build
           command: |
             mkdir mtplvcap_windows_amd64
-            go build -o ./mtplvcap_windows_amd64/mtplvcap .
+            go build -o ./mtplvcap_windows_amd64/mtplvcap.exe .
       - run:
           <<: *windows-default
           name: Copy DLL
