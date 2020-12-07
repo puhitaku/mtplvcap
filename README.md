@@ -31,6 +31,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 
 ### Cameras (unsupported)
 
+ - [Nikon D3000](https://github.com/puhitaku/mtplvcap/issues/18)
  - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
 
 

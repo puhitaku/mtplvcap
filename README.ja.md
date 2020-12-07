@@ -31,6 +31,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 
 ### カメラ（サポート外）
 
+ - [Nikon D3000](https://github.com/puhitaku/mtplvcap/issues/18)
  - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
 
 
