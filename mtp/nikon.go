@@ -42,9 +42,16 @@ type Model struct {
 type ModelMap map[string]Model
 
 func (mm ModelMap) Match(product string) (Model, bool) {
+	tokens := strings.Split(product, " ")
+	for i := range tokens {
+		tokens[i] = strings.ToLower(tokens[i])
+	}
+
 	for k, v := range models {
-		if strings.Contains(product, k) {
-			return v, true
+		for _, t := range tokens {
+			if strings.ToLower(k) == t {
+				return v, true
+			}
 		}
 	}
 	return Model{}, false
