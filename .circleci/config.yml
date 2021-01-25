@@ -71,6 +71,8 @@ jobs:
           <<: *windows-default
           name: Install prerequisites
           command: |
+            # Prevent binaries in Git for Windows
+            export PATH=/c/tools/msys64/usr/bin:/c/tools/msys64/mingw64/bin:/c/tools/msys64/mingw64/lib/go/bin:$PATH
             /c/tools/msys64/usr/bin/pacman -Sy --noconfirm \\
             mingw-w64-x86_64-toolchain \\
             mingw-w64-x86_64-libusb \\
@@ -81,12 +83,14 @@ jobs:
           <<: *windows-default
           name: Build
           command: |
+            export PATH=/c/tools/msys64/usr/bin:/c/tools/msys64/mingw64/bin:/c/tools/msys64/mingw64/lib/go/bin:$PATH
             mkdir mtplvcap_windows_amd64
             go build -o ./mtplvcap_windows_amd64/mtplvcap.exe .
       - run:
           <<: *windows-default
           name: Copy DLL
           command: |
+            export PATH=/c/tools/msys64/usr/bin:/c/tools/msys64/mingw64/bin:/c/tools/msys64/mingw64/lib/go/bin:$PATH
             cp /mingw64/bin/libusb-1.0.dll ./mtplvcap_windows_amd64/
       - persist_to_workspace:
           root: .
@@ -95,7 +99,7 @@ jobs:
 
   build-mac:
     macos:
-      xcode: 10.1.0
+      xcode: 11.1.0
     resource_class: medium
     steps:
       - checkout
