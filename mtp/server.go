@@ -684,7 +684,6 @@ type LiveView struct {
 	FocusY           int16
 	Rotation         Rotation
 	AutoFocus        AF
-	MovieTimeRemain  float64
 	Recording        bool
 
 	JPEG []byte
@@ -716,11 +715,6 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 		return LiveView{}, fmt.Errorf("failed to decode header")
 	}
 
-	remain, err := strconv.ParseFloat(fmt.Sprintf("%d.%d", lvr.MovieTimeRemainInt, lvr.MovieTimeRemainFrac), 64)
-	if err != nil {
-		return LiveView{}, fmt.Errorf("failed to parse MovieTimeRemain: %s", err)
-	}
-
 	rot := Rotation0
 	if lvr.Rotation == 1 {
 		rot = RotationMinus90
@@ -748,7 +742,6 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 		FocusY:           lvr.FocusY,
 		Rotation:         rot,
 		AutoFocus:        af,
-		MovieTimeRemain:  remain,
 		Recording:        lvr.Recording == 1,
 		JPEG:             raw[hs:],
 	}, nil
