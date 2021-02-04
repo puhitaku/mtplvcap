@@ -25,6 +25,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
  - Nikon D7100 (thanks @TheMidlander !)
  - Nikon D7200 (thanks [@br_spike_love](https://twitter.com/br_spike_love) !)
  - Nikon D800E (thanks [@Higomon](https://github.com/Higomon) !)
+ - Nikon Df
  - Nikon Z6 (thanks @ShadowXii !)
  - Nikon Z7 (thanks @zacheadams !)
  - フィードバック歓迎！お手持ちのカメラの動作可否を是非Issueにあげてください。
