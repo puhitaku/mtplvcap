@@ -56,7 +56,7 @@ Notice: Snippets described here should run as-is and copy-and-pastable.
 
 ### Windows
 
-**Important: For Windows, you have to replace a pre-installed MTP driver with a libusb driver.
+**Important: For Windows, you have to replace a pre-installed MTP driver with WinUSB driver.
 Your PC will no longer recognize the camera as an MTP device unless you re-install it manually.
 Reverting back is super easy! Follow [the instruction](#revert-back-the-driver-if-necessary) to revert back the driver.**
 
@@ -73,10 +73,10 @@ Reverting back is super easy! Follow [the instruction](#revert-back-the-driver-i
 
     <img alt="Choose the camera in the list" src="./img/zadig_2.png" width="400px">
 
-    (This screenshot was taken after the libusb driver is installed and will differ from what you see)
+    (This screenshot was taken after the WinUSB driver is installed and will differ from what you see)
 
-1. Choose `libusb-win32 (vX.X.X.X)` in the input box in the middle of the window
-    - Please keep in mind that `WinUSB` does NOT work. Be careful not to choose it.
+1. Choose `WinUSB (vX.X.X.X)` in the input box in the middle of the window
+    - Please keep in mind that other choices do NOT work
 
 1. Click `Replace Driver` button and wait it finishes the installation
     - Optionally, open the Device Manager and make sure it's installed
@@ -141,14 +141,14 @@ Reverting back is super easy! Follow [the instruction](#revert-back-the-driver-i
 
 #### Revert back the driver (if necessary)
 
-Generic MTP apps will no longer be able to communicate with cameras with replaced libusb driver.
+Generic MTP apps will no longer be able to communicate with cameras with replaced WinUSB driver.
 To revert it back, follow the instruction:
 
 (Screenshots are not available as I don't have English Windows. Sorry for inconvenience.)
 
-1. Right-click the Start Button and click ""
+1. Right-click the Start Button and click "Device Manager"
 
-1. Right-click your camera in the "libusb-win32 devices" section and click "Update driver"
+1. Right-click your camera in the "Universal Serial Bus devices" section and click "Update driver"
 
 1. Click "Browse my computer for driver software"
 
