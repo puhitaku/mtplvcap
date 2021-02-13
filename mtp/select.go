@@ -161,10 +161,24 @@ func SelectDeviceDirect(vid, pid uint16) (*DeviceDirect, error) {
 	}
 
 	dev := devs[0]
-	vendor, product := dev.devDescr.IdVendor, dev.devDescr.IdProduct
+	vendor, product := devs[0].devDescr.IdVendor, devs[0].devDescr.IdProduct
 
 	if len(devs) > 1 {
-		log.MTP.Warningf("detected more than 1 device, opening the first device: %04x:%04x", vendor, product)
+		log.MTP.Warningf("detected more than 1 device")
+		index := -1
+		for i, d := range devs {
+			if d.devDescr.IdVendor == 0x04b0 {
+				index = i
+			}
+		}
+
+		if index >= 0 {
+			dev = devs[index]
+			vendor, product = devs[index].devDescr.IdVendor, devs[index].devDescr.IdProduct
+			log.MTP.Infof("opening the detected Nikon DSLR: %04x:%04x", vendor, product)
+		} else {
+			log.MTP.Warningf("could not detect a Nikon DSLR. Opening the first device: %04x:%04x", vendor, product)
+		}
 	}
 
 	if err := dev.Open(); err != nil {
