@@ -468,13 +468,8 @@ func (s *LVServer) startLiveView() error {
 	s.mtpLock.Lock()
 	defer s.mtpLock.Unlock()
 
-	err := s.dev.RunTransactionWithNoParams(OC_NIKON_DeviceReady)
-	if err != nil {
-		return fmt.Errorf("failed to start live view: the camera is not ready")
-	}
-
 	desc := DevicePropDesc{}
-	err = s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
+	err := s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
 	if err != nil {
 		return fmt.Errorf("failed to get recording media: %s", err)
 	}
