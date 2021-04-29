@@ -473,8 +473,33 @@ func (s *LVServer) startLiveView() error {
 		return fmt.Errorf("failed to start live view: the camera is not ready")
 	}
 
+	if s.model.QuirkDontSwitchMedia {
+		log.LV.Debugf("%s is not capable of switching media, skipping", s.model.Name)
+	} else {
+		err = s.switchRecordMedia()
+		if err != nil {
+			return fmt.Errorf("failed to switch recording media: %s", err)
+		}
+	}
+
+	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
+	if err != nil {
+		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
+			log.LV.Error("failed to start live view (InvalidStatus). Investigating the reason...")
+			reason, err := s.readLiveViewProhibitCondition()
+			if err != nil {
+				return fmt.Errorf("failed to start live view and failed to investigate the reason: %s", err)
+			}
+			return fmt.Errorf("failed to start live view, reason: %s", reason)
+		}
+		return fmt.Errorf("failed to start live view: %s", err)
+	}
+	return nil
+}
+
+func (s *LVServer) switchRecordMedia() error {
 	desc := DevicePropDesc{}
-	err = s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
+	err := s.dev.GetDevicePropDesc(DPC_NIKON_RecordingMedia, &desc)
 	if err != nil {
 		return fmt.Errorf("failed to get recording media: %s", err)
 	}
@@ -490,26 +515,13 @@ func (s *LVServer) startLiveView() error {
 			}
 			err = s.dev.SetDevicePropValue(DPC_NIKON_RecordingMedia, &payload)
 			if err != nil {
-				return fmt.Errorf("failed to switch the record media to the SDRAM: %s", err)
+				return fmt.Errorf("failed to SetDevicePropValue: %s", err)
 			}
 		} else {
 			log.LV.Debug("current recording media: SDRAM")
 		}
 	} else {
 		log.LV.Warning("unexpected format of the RecordingMedia property")
-	}
-
-	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
-	if err != nil {
-		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
-			log.LV.Error("failed to start live view (InvalidStatus). Investigating the reason...")
-			reason, err := s.readLiveViewProhibitCondition()
-			if err != nil {
-				return fmt.Errorf("failed to start live view and failed to investigate the reason: %s", err)
-			}
-			return fmt.Errorf("failed to start live view, reason: %s", reason)
-		}
-		return fmt.Errorf("failed to start live view: %s", err)
 	}
 	return nil
 }

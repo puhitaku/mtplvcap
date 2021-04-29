@@ -37,6 +37,7 @@ const (
 type Model struct {
 	Name string
 	HeaderSize int
+	QuirkDontSwitchMedia bool
 }
 
 type ModelMap map[string]Model
@@ -113,6 +114,11 @@ var models = ModelMap{
 	"D700": {
 		Name: "D700",
 		HeaderSize: 64,
+	},
+	"D750": {
+		Name: "D750",
+		HeaderSize: 384,
+		QuirkDontSwitchMedia: true,
 	},
 	"D7000": {
 		Name: "D7000",
