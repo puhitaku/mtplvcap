@@ -23,6 +23,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
  - Nikon D5500 (thanks [@nasustim](https://github.com/nasustim) !)
  - Nikon D600 (thanks [@ohtayo](https://github.com/ohtayo) !)
  - Nikon D610 (thanks @hazlitt !)
+ - Nikon D750
  - Nikon D7000 (thanks @takashi0314 !)
  - Nikon D7100 (thanks @TheMidlander !)
  - Nikon D7200 (thanks [@br_spike_love](https://twitter.com/br_spike_love) !)
