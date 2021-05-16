@@ -103,6 +103,11 @@ var models = ModelMap{
 		Name: "D5500",
 		HeaderSize: 384,
 	},
+	"D5600": {
+		Name: "D5600",
+		HeaderSize: 384,
+		QuirkDontSwitchMedia: true,
+	},
 	"D600": {
 		Name: "D600",
 		HeaderSize: 384,
