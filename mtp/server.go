@@ -473,9 +473,7 @@ func (s *LVServer) startLiveView() error {
 		return fmt.Errorf("failed to start live view: the camera is not ready")
 	}
 
-	if s.model.QuirkDontSwitchMedia {
-		log.LV.Debugf("%s is not capable of switching media, skipping", s.model.Name)
-	} else {
+	if s.model.QuirkSwitchMedia {
 		err = s.switchRecordMedia()
 		if err != nil {
 			return fmt.Errorf("failed to switch recording media: %s", err)
