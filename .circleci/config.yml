@@ -15,18 +15,12 @@ aliases:
     filters:
       tags:
         only: /.*/
-  filter-rc: &filter-rc
-    filters:
-      branches:
-        ignore: /.*/
-      tags:
-        only: /^v\d+\.\d+\.\d+-rc\d+$/
   filter-release: &filter-release
     filters:
       branches:
         ignore: /.*/
       tags:
-        only: /^v\d+\.\d+\.\d+$/
+        only: /^v\d+\.\d+\.\d+(-rc\d+)?$/
   release-template: &release-template
     docker:
       - image: circleci/golang:buster
@@ -43,10 +37,6 @@ workflows:
           <<: *filter-release
       - build-mac:
           <<: *filter-release
-      - prerelease:
-          <<: *filter-rc
-          requires:
-            - build-linux
       - release:
           <<: *filter-release
           requires:
@@ -141,21 +131,6 @@ jobs:
           root: .
           paths:
             - mtplvcap_linux_amd64
-
-  prerelease:
-    <<: *release-template
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Compress
-          command: |
-            mkdir zip
-            zip -r mtplvcap_linux_amd64 mtplvcap_linux_amd64
-            mv *.zip ./zip/
-      - github-release/create:
-          path: ./zip/
-          prerelease: true
 
   release:
     <<: *release-template
