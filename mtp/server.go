@@ -251,7 +251,7 @@ func (s *LVServer) Run() error {
 	if ok {
 		log.LV.Debugf("model matched: %s", model.Name)
 	} else {
-		log.LV.Debugf("model didn't match, falling back to the generic model", model.Name)
+		log.LV.Debugf("model didn't match, falling back to the generic model %s", model.Name)
 		model = models.Generic()
 	}
 	s.model = model
