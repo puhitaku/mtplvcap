@@ -151,7 +151,7 @@ func (d *DeviceDirect) Open() error {
 
 type ID struct {
 	Manufacturer string
-	Product string
+	Product      string
 	SerialNumber string
 }
 

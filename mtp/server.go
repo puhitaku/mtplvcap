@@ -251,7 +251,7 @@ func (s *LVServer) Run() error {
 	if ok {
 		log.LV.Debugf("model matched: %s", model.Name)
 	} else {
-		log.LV.Debugf("model didn't match, falling back to the generic model", model.Name)
+		log.LV.Debugf("model didn't match, falling back to the generic model %s", model.Name)
 		model = models.Generic()
 	}
 	s.model = model
@@ -473,9 +473,7 @@ func (s *LVServer) startLiveView() error {
 		return fmt.Errorf("failed to start live view: the camera is not ready")
 	}
 
-	if s.model.QuirkDontSwitchMedia {
-		log.LV.Debugf("%s is not capable of switching media, skipping", s.model.Name)
-	} else {
+	if s.model.QuirkSwitchMedia {
 		err = s.switchRecordMedia()
 		if err != nil {
 			return fmt.Errorf("failed to switch recording media: %s", err)
@@ -587,7 +585,7 @@ func (s *LVServer) readLiveViewProhibitCondition() (string, error) {
 
 func (*LVServer) bitScan(val uint32) int {
 	for i := 0; i < 64; i++ {
-		if val & (1 << i) > 0 {
+		if val&(1<<i) > 0 {
 			return i
 		}
 	}
