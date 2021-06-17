@@ -585,7 +585,7 @@ func (s *LVServer) readLiveViewProhibitCondition() (string, error) {
 
 func (*LVServer) bitScan(val uint32) int {
 	for i := 0; i < 64; i++ {
-		if val & (1 << i) > 0 {
+		if val&(1<<i) > 0 {
 			return i
 		}
 	}
