@@ -9,38 +9,70 @@ mtplvcapは、NikonのカメラのLive ViewをWebSocketでブラウザにリレ�
 mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプチャーボードなしでWebカメラにできます。お気に入りのカメラでGoogle Hangouts・Meet・Zoomを楽しみましょう！
 
 
-## 動作を確認しているもの
+## 動作を確認している環境
 
-### カメラ（確認済み）
+### サポートするカメラ（多分動くものを含む）
 
- - Nikon D3200 (thanks @Ivisi !)
- - Nikon D3300 (thanks [@unasuke](https://github.com/unasuke) !)
- - Nikon D3500 (thanks [@fedegratti](https://github.com/fedegratti) !)
- - Nikon D500 (thanks [@yasuoeto](https://github.com/yasuoeto) !)
- - Nikon D5000 (thanks [@rch850](https://github.com/rch850) !)
- - Nikon D5100 (thanks [@shigureanko](https://twitter.com/shigureanko) !)
- - Nikon D5200 (thanks [@ThatSameer](https://twitter.com/ThatSameer) !)
- - Nikon D5300
- - Nikon D5500 (thanks [@nasustim](https://github.com/nasustim) !)
- - Nikon D5600 (thanks [@tadasv](https://github.com/tadasv) !)
- - Nikon D600 (thanks [@ohtayo](https://github.com/ohtayo) !)
- - Nikon D610 (thanks @hazlitt !)
- - Nikon D750
- - Nikon D7000 (thanks @takashi0314 !)
- - Nikon D7100 (thanks @TheMidlander !)
- - Nikon D7200 (thanks [@br_spike_love](https://twitter.com/br_spike_love) !)
- - Nikon D800E (thanks [@Higomon](https://github.com/Higomon) !)
- - Nikon D90 (thanks [@sachaos](https://github.com/sachaos) !)
- - Nikon Df
- - Nikon Z6 (thanks @ShadowXii !)
- - Nikon Z7 (thanks @zacheadams !)
- - フィードバック歓迎！お手持ちのカメラの動作可否を是非Issueにあげてください。
+|機種 |LV 利用可    |確認済み          |確認した人              |
+|:----|:-----------:|:----------------:|:-----------------------|
+|D3   |Yes          |                  |動作確認をお待ちしています！|
+|D3X  |Yes          |                  |動作確認をお待ちしています！|
+|D3S  |Yes          |                  |動作確認をお待ちしています！|
+|D4   |Yes          |                  |動作確認をお待ちしています！|
+|D4S  |Yes          |                  |動作確認をお待ちしています！|
+|D5   |Yes          |                  |動作確認をお待ちしています！|
+|D6   |Yes          |                  |動作確認をお待ちしています！|
+|D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
+|D300 |Yes          |                  |動作確認をお待ちしています！|
+|D300S|Yes          |                  |動作確認をお待ちしています！|
+|D500 |Yes          |:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
+|D600 |Yes          |:white_check_mark:|[@ohtayo](https://github.com/ohtayo)|
+|D610 |Yes          |:white_check_mark:|@hazlitt|
+|D700 |?            |                  |動作確認をお待ちしています！|
+|D750 |Yes          |:white_check_mark:||
+|D780 |Yes          |                  |動作確認をお待ちしています！|
+|D800 |Yes          |                  |動作確認をお待ちしています！|
+|D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
+|D810 |Yes          |                  |動作確認をお待ちしています！|
+|D850 |Yes          |                  |動作確認をお待ちしています！|
+|D3100|Yes          |                  |動作確認をお待ちしています！|
+|D3200|Yes          |:white_check_mark:|@Ivisi|
+|D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
+|D3400|Yes          |                  |動作確認をお待ちしています！|
+|D3500|Yes          |:white_check_mark:|[@fedegratti](https://github.com/fedegratti)|
+|D5000|Yes          |:white_check_mark:|[@rch850](https://github.com/rch850)|
+|D5100|Yes          |:white_check_mark:|[@shigureanko](https://twitter.com/shigureanko)|
+|D5200|Yes          |:white_check_mark:|[@ThatSameer](https://twitter.com/ThatSameer)|
+|D5300|Yes          |:white_check_mark:||
+|D5500|Yes          |:white_check_mark:|[@nasustim](https://github.com/nasustim)|
+|D5600|Yes          |:white_check_mark:|[@tadasv](https://github.com/tadasv)|
+|D7000|Yes          |:white_check_mark:|@takashi0314|
+|D7100|Yes          |:white_check_mark:|@TheMidlander|
+|D7200|Yes          |:white_check_mark:|[@br_spike_love](https://twitter.com/br_spike_love)|
+|D7500|Yes          |                  |動作確認をお待ちしています！|
+|Df   |Yes          |:white_check_mark:||
+|Z5   |Yes          |                  |動作確認をお待ちしています！|
+|Z6   |Yes          |:white_check_mark:|@ShadowXii|
+|Z6II |Yes          |                  |動作確認をお待ちしています！|
+|Z7   |Yes          |:white_check_mark:|@zacheadams|
+|Z7II |Yes          |                  |動作確認をお待ちしています！|
+|Z9   |Yes          |                  |未発売だが多分動く :wink:|
+|Z50  |Yes          |                  |動作確認をお待ちしています！|
 
 
-### カメラ（サポート外）
+### サポートしないカメラ
 
- - [Nikon D3000](https://github.com/puhitaku/mtplvcap/issues/18)
- - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
+注釈: リンクが張られていない機種は動作未確認だが多分そもそも LV 機能を持たない
+
+ - 1ケタ機種の一部 D1, D1X, D1H, D2H, D2X, D2Hs, D2Xs
+ - 2ケタ機種の一部 D40, D40x, D50, D60, D70, D70s, D80
+ - 3ケタ機種の一部 D100, D200
+ - 4ケタ機種の一部 [D3000](https://github.com/puhitaku/mtplvcap/issues/18)
+ - Nikon 1 シリーズ
+   - [1 J5](https://github.com/puhitaku/mtplvcap/issues/4) は LV を開始しようとすると「未サポート」と応答が返ってくる
+   - 知られていない MTP の命令を使うとおそらく LV を有効化できる
+   - Nikon 1 シリーズの LV やテザー撮影についてなにか情報をお持ちの方はぜひ教えて下さい
+ - COOLPIX シリーズ
 
 
 ### 確認済みのOSとその他のソフト

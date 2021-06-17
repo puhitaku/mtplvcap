@@ -11,36 +11,68 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 
 ## Environments
 
-### Cameras (confirmed)
+### Supported models (incl. potentially supported)
 
- - Nikon D3200 (thanks @Ivisi !)
- - Nikon D3300 (thanks [@unasuke](https://github.com/unasuke) !)
- - Nikon D3500 (thanks [@fedegratti](https://github.com/fedegratti) !)
- - Nikon D500 (thanks [@yasuoeto](https://github.com/yasuoeto) !)
- - Nikon D5000 (thanks [@rch850](https://github.com/rch850) !)
- - Nikon D5100 (thanks [@shigureanko](https://twitter.com/shigureanko) !)
- - Nikon D5200 (thanks [@ThatSameer](https://twitter.com/ThatSameer) !)
- - Nikon D5300
- - Nikon D5500 (thanks [@nasustim](https://github.com/nasustim) !)
- - Nikon D5600 (thanks [@tadasv](https://github.com/tadasv) !)
- - Nikon D600 (thanks [@ohtayo](https://github.com/ohtayo) !)
- - Nikon D610 (thanks @hazlitt !)
- - Nikon D750
- - Nikon D7000 (thanks @takashi0314 !)
- - Nikon D7100 (thanks @TheMidlander !)
- - Nikon D7200 (thanks [@br_spike_love](https://twitter.com/br_spike_love) !)
- - Nikon D800E (thanks [@Higomon](https://github.com/Higomon) !)
- - Nikon D90 (thanks [@sachaos](https://github.com/sachaos) !)
- - Nikon Df
- - Nikon Z6 (thanks @ShadowXii !)
- - Nikon Z7 (thanks @zacheadams !)
- - I welcome feedback! Please tell me if your camera works or not.
+|Model|Has Live View|Confirmed         |Confirmed By            |
+|:----|:-----------:|:----------------:|:-----------------------|
+|D3   |Yes          |                  |Please give me a report!|
+|D3X  |Yes          |                  |Please give me a report!|
+|D3S  |Yes          |                  |Please give me a report!|
+|D4   |Yes          |                  |Please give me a report!|
+|D4S  |Yes          |                  |Please give me a report!|
+|D5   |Yes          |                  |Please give me a report!|
+|D6   |Yes          |                  |Please give me a report!|
+|D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
+|D300 |Yes          |                  |Please give me a report!|
+|D300S|Yes          |                  |Please give me a report!|
+|D500 |Yes          |:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
+|D600 |Yes          |:white_check_mark:|[@ohtayo](https://github.com/ohtayo)|
+|D610 |Yes          |:white_check_mark:|@hazlitt|
+|D700 |?            |                  |Please give me a report!|
+|D750 |Yes          |:white_check_mark:||
+|D780 |Yes          |                  |Please give me a report!|
+|D800 |Yes          |                  |Please give me a report!|
+|D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
+|D810 |Yes          |                  |Please give me a report!|
+|D850 |Yes          |                  |Please give me a report!|
+|D3100|Yes          |                  |Please give me a report!|
+|D3200|Yes          |:white_check_mark:|@Ivisi|
+|D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
+|D3400|Yes          |                  |Please give me a report!|
+|D3500|Yes          |:white_check_mark:|[@fedegratti](https://github.com/fedegratti)|
+|D5000|Yes          |:white_check_mark:|[@rch850](https://github.com/rch850)|
+|D5100|Yes          |:white_check_mark:|[@shigureanko](https://twitter.com/shigureanko)|
+|D5200|Yes          |:white_check_mark:|[@ThatSameer](https://twitter.com/ThatSameer)|
+|D5300|Yes          |:white_check_mark:||
+|D5500|Yes          |:white_check_mark:|[@nasustim](https://github.com/nasustim)|
+|D5600|Yes          |:white_check_mark:|[@tadasv](https://github.com/tadasv)|
+|D7000|Yes          |:white_check_mark:|@takashi0314|
+|D7100|Yes          |:white_check_mark:|@TheMidlander|
+|D7200|Yes          |:white_check_mark:|[@br_spike_love](https://twitter.com/br_spike_love)|
+|D7500|Yes          |                  |Please give me a report!|
+|Df   |Yes          |:white_check_mark:||
+|Z5   |Yes          |                  |Please give me a report!|
+|Z6   |Yes          |:white_check_mark:|@ShadowXii|
+|Z6II |Yes          |                  |Please give me a report!|
+|Z7   |Yes          |:white_check_mark:|@zacheadams|
+|Z7II |Yes          |                  |Please give me a report!|
+|Z9   |Yes          |                  |It's not sold yet but hopefully works :wink:|
+|Z50  |Yes          |                  |Please give me a report!|
 
 
-### Cameras (unsupported)
+### Unsupported models
 
- - [Nikon D3000](https://github.com/puhitaku/mtplvcap/issues/18)
- - [Nikon 1 J5](https://github.com/puhitaku/mtplvcap/issues/4)
+Note: model names without a link is not confirmed but may not support live viewing
+
+ - One digit D series D1, D1X, D1H, D2H, D2X, D2Hs, D2Xs
+ - Two digits D series D40, D40x, D50, D60, D70, D70s, D80
+ - Three digits D series D100, D200
+ - Four digits D series [D3000](https://github.com/puhitaku/mtplvcap/issues/18)
+ - Nikon 1 series
+   - [1 J5](https://github.com/puhitaku/mtplvcap/issues/4) responds "unsupported" as a reply of Start Live View request, so mysterious
+   - There may be an unknown MTP operation to get it working
+   - Please tell me anything you know about Live View or tethered shoot of Nikon 1 series!
+ - COOLPIX series
 
 
 ### Verified OSes and other software
