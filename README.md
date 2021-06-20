@@ -31,7 +31,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D700 |?            |                  |Please give me a report!|
 |D750 |Yes          |:white_check_mark:||
 |D780 |Yes          |                  |Please give me a report!|
-|D800 |Yes          |                  |Please give me a report!|
+|D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |Please give me a report!|
 |D850 |Yes          |                  |Please give me a report!|

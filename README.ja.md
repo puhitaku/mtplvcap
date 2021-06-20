@@ -31,7 +31,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D700 |?            |                  |動作確認をお待ちしています！|
 |D750 |Yes          |:white_check_mark:||
 |D780 |Yes          |                  |動作確認をお待ちしています！|
-|D800 |Yes          |                  |動作確認をお待ちしています！|
+|D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |動作確認をお待ちしています！|
 |D850 |Yes          |                  |動作確認をお待ちしています！|
