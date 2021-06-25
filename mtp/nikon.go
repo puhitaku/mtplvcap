@@ -135,6 +135,7 @@ var models = ModelMap{
 	"D90": {
 		Name:       "D90",
 		HeaderSize: 128,
+		QuirkSwitchMedia: true,
 	},
 	"Z6": {
 		Name:       "Z6",
