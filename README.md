@@ -13,7 +13,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 
 ### Supported models (incl. potentially supported)
 
-|Model|Has Live View|Confirmed         |Confirmed By            |
+|Model|Has Live View|Status            |Confirmed By            |
 |:----|:-----------:|:----------------:|:-----------------------|
 |D3   |Yes          |                  |Please give me a report!|
 |D3X  |Yes          |                  |Please give me a report!|
@@ -23,12 +23,12 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D5   |Yes          |                  |Please give me a report!|
 |D6   |Yes          |                  |Please give me a report!|
 |D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
-|D300 |Yes          |                  |Please give me a report!|
+|D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|I welcome additional reports!|
 |D300S|Yes          |                  |Please give me a report!|
 |D500 |Yes          |:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
 |D600 |Yes          |:white_check_mark:|[@ohtayo](https://github.com/ohtayo)|
 |D610 |Yes          |:white_check_mark:|@hazlitt|
-|D700 |?            |                  |Please give me a report!|
+|D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|I welcome additional reports!|
 |D750 |Yes          |:white_check_mark:||
 |D780 |Yes          |                  |Please give me a report!|
 |D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|

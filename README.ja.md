@@ -13,7 +13,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 
 ### サポートするカメラ（多分動くものを含む）
 
-|機種 |LV 利用可    |確認済み          |確認した人              |
+|機種 |LV 利用可    |ステータス        |確認した人              |
 |:----|:-----------:|:----------------:|:-----------------------|
 |D3   |Yes          |                  |動作確認をお待ちしています！|
 |D3X  |Yes          |                  |動作確認をお待ちしています！|
@@ -23,12 +23,12 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D5   |Yes          |                  |動作確認をお待ちしています！|
 |D6   |Yes          |                  |動作確認をお待ちしています！|
 |D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
-|D300 |Yes          |                  |動作確認をお待ちしています！|
+|D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|追加の動作確認をお待ちしています！|
 |D300S|Yes          |                  |動作確認をお待ちしています！|
 |D500 |Yes          |:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
 |D600 |Yes          |:white_check_mark:|[@ohtayo](https://github.com/ohtayo)|
 |D610 |Yes          |:white_check_mark:|@hazlitt|
-|D700 |?            |                  |動作確認をお待ちしています！|
+|D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|追加の動作確認をお待ちしています！|
 |D750 |Yes          |:white_check_mark:||
 |D780 |Yes          |                  |動作確認をお待ちしています！|
 |D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
