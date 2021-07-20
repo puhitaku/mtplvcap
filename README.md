@@ -35,7 +35,6 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |Please give me a report!|
 |D850 |Yes          |                  |Please give me a report!|
-|D3100|Yes          |                  |Please give me a report!|
 |D3200|Yes          |:white_check_mark:|@Ivisi|
 |D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
 |D3400|Yes          |                  |Please give me a report!|
@@ -67,7 +66,7 @@ Note: model names without a link is not confirmed but may not support live viewi
  - One digit D series D1, D1X, D1H, D2H, D2X, D2Hs, D2Xs
  - Two digits D series D40, D40x, D50, D60, D70, D70s, D80
  - Three digits D series D100, D200
- - Four digits D series [D3000](https://github.com/puhitaku/mtplvcap/issues/18)
+ - Four digits D series [D3000](https://github.com/puhitaku/mtplvcap/issues/18), D3100
  - Nikon 1 series
    - [1 J5](https://github.com/puhitaku/mtplvcap/issues/4) responds "unsupported" as a reply of Start Live View request, so mysterious
    - There may be an unknown MTP operation to get it working

@@ -35,7 +35,6 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |動作確認をお待ちしています！|
 |D850 |Yes          |                  |動作確認をお待ちしています！|
-|D3100|Yes          |                  |動作確認をお待ちしています！|
 |D3200|Yes          |:white_check_mark:|@Ivisi|
 |D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
 |D3400|Yes          |                  |動作確認をお待ちしています！|
@@ -67,7 +66,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
  - 1ケタ機種の一部 D1, D1X, D1H, D2H, D2X, D2Hs, D2Xs
  - 2ケタ機種の一部 D40, D40x, D50, D60, D70, D70s, D80
  - 3ケタ機種の一部 D100, D200
- - 4ケタ機種の一部 [D3000](https://github.com/puhitaku/mtplvcap/issues/18)
+ - 4ケタ機種の一部 [D3000](https://github.com/puhitaku/mtplvcap/issues/18), D3100
  - Nikon 1 シリーズ
    - [1 J5](https://github.com/puhitaku/mtplvcap/issues/4) は LV を開始しようとすると「未サポート」と応答が返ってくる
    - 知られていない MTP の命令を使うとおそらく LV を有効化できる
