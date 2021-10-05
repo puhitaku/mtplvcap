@@ -87,6 +87,11 @@ var models = ModelMap{
 		HeaderSize: 64,
 		QuirkSwitchMedia: true,
 	},
+	"D300s": {
+		Name:       "D300s",
+		HeaderSize: 64,
+		QuirkSwitchMedia: true,
+	},
 	"D3200": {
 		Name:       "D3200",
 		HeaderSize: 384,
