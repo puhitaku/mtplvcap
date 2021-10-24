@@ -21,7 +21,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D4   |Yes          |                  |Please give me a report!|
 |D4S  |Yes          |                  |Please give me a report!|
 |D5   |Yes          |                  |Please give me a report!|
-|D6   |Yes          |                  |Please give me a report!|
+|D6   |Yes          |:white_check_mark:|@puhitaku|
 |D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
 |D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|I welcome additional reports!|
 |D300S|Yes          |                  |Please give me a report!|
@@ -30,11 +30,11 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D610 |Yes          |:white_check_mark:|@hazlitt|
 |D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|I welcome additional reports!|
 |D750 |Yes          |:white_check_mark:||
-|D780 |Yes          |                  |Please give me a report!|
+|D780 |Yes          |:white_check_mark:|@puhitaku|
 |D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |Please give me a report!|
-|D850 |Yes          |                  |Please give me a report!|
+|D850 |Yes          |:white_check_mark:|@puhitaku|
 |D3200|Yes          |:white_check_mark:|@Ivisi|
 |D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
 |D3400|Yes          |:white_check_mark:|@chefaustin|
@@ -42,21 +42,22 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D5000|Yes          |:white_check_mark:|[@rch850](https://github.com/rch850)|
 |D5100|Yes          |:white_check_mark:|[@shigureanko](https://twitter.com/shigureanko)|
 |D5200|Yes          |:white_check_mark:|[@ThatSameer](https://twitter.com/ThatSameer)|
-|D5300|Yes          |:white_check_mark:||
+|D5300|Yes          |:white_check_mark:|@puhitaku|
 |D5500|Yes          |:white_check_mark:|[@nasustim](https://github.com/nasustim)|
 |D5600|Yes          |:white_check_mark:|[@tadasv](https://github.com/tadasv)|
 |D7000|Yes          |:white_check_mark:|@takashi0314|
 |D7100|Yes          |:white_check_mark:|@TheMidlander|
 |D7200|Yes          |:white_check_mark:|[@br_spike_love](https://twitter.com/br_spike_love)|
-|D7500|Yes          |                  |Please give me a report!|
+|D7500|Yes          |:white_check_mark:|@puhitaku|
 |Df   |Yes          |:white_check_mark:||
 |Z5   |Yes          |:white_check_mark:|[@ag-eitilt](https://github.com/ag-eitilt)|
 |Z6   |Yes          |:white_check_mark:|@ShadowXii|
-|Z6II |Yes          |                  |Please give me a report!|
+|Z6II |Yes          |:white_check_mark:|@puhitaku|
 |Z7   |Yes          |:white_check_mark:|@zacheadams|
-|Z7II |Yes          |                  |Please give me a report!|
+|Z7II |Yes          |:white_check_mark:|@puhitaku|
 |Z9   |Yes          |                  |It's not sold yet but hopefully works :wink:|
-|Z50  |Yes          |                  |Please give me a report!|
+|Z50  |Yes          |:white_check_mark:|@puhitaku|
+|Z fc |Yes          |:white_check_mark:|@puhitaku|
 
 
 ### Unsupported models

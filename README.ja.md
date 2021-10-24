@@ -21,7 +21,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D4   |Yes          |                  |動作確認をお待ちしています！|
 |D4S  |Yes          |                  |動作確認をお待ちしています！|
 |D5   |Yes          |                  |動作確認をお待ちしています！|
-|D6   |Yes          |                  |動作確認をお待ちしています！|
+|D6   |Yes          |:white_check_mark:|@puhitaku|
 |D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
 |D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|追加の動作確認をお待ちしています！|
 |D300S|Yes          |                  |動作確認をお待ちしています！|
@@ -30,11 +30,11 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D610 |Yes          |:white_check_mark:|@hazlitt|
 |D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|追加の動作確認をお待ちしています！|
 |D750 |Yes          |:white_check_mark:||
-|D780 |Yes          |                  |動作確認をお待ちしています！|
+|D780 |Yes          |:white_check_mark:|@puhitaku|
 |D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |動作確認をお待ちしています！|
-|D850 |Yes          |                  |動作確認をお待ちしています！|
+|D850 |Yes          |:white_check_mark:|@puhitaku|
 |D3200|Yes          |:white_check_mark:|@Ivisi|
 |D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
 |D3400|Yes          |:white_check_mark:|@chefaustin|
@@ -42,21 +42,22 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D5000|Yes          |:white_check_mark:|[@rch850](https://github.com/rch850)|
 |D5100|Yes          |:white_check_mark:|[@shigureanko](https://twitter.com/shigureanko)|
 |D5200|Yes          |:white_check_mark:|[@ThatSameer](https://twitter.com/ThatSameer)|
-|D5300|Yes          |:white_check_mark:||
+|D5300|Yes          |:white_check_mark:|@puhitaku|
 |D5500|Yes          |:white_check_mark:|[@nasustim](https://github.com/nasustim)|
 |D5600|Yes          |:white_check_mark:|[@tadasv](https://github.com/tadasv)|
 |D7000|Yes          |:white_check_mark:|@takashi0314|
 |D7100|Yes          |:white_check_mark:|@TheMidlander|
 |D7200|Yes          |:white_check_mark:|[@br_spike_love](https://twitter.com/br_spike_love)|
-|D7500|Yes          |                  |動作確認をお待ちしています！|
+|D7500|Yes          |:white_check_mark:|@puhitaku|
 |Df   |Yes          |:white_check_mark:||
 |Z5   |Yes          |:white_check_mark:|[@ag-eitilt](https://github.com/ag-eitilt)|
 |Z6   |Yes          |:white_check_mark:|@ShadowXii|
-|Z6II |Yes          |                  |動作確認をお待ちしています！|
+|Z6II |Yes          |:white_check_mark:|@puhitaku|
 |Z7   |Yes          |:white_check_mark:|@zacheadams|
-|Z7II |Yes          |                  |動作確認をお待ちしています！|
+|Z7II |Yes          |:white_check_mark:|@puhitaku|
 |Z9   |Yes          |                  |未発売だが多分動く :wink:|
-|Z50  |Yes          |                  |動作確認をお待ちしています！|
+|Z50  |Yes          |:white_check_mark:|@puhitaku|
+|Z fc |Yes          |:white_check_mark:|@puhitaku|
 
 
 ### サポートしないカメラ
