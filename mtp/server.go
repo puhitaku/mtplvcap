@@ -480,6 +480,11 @@ func (s *LVServer) startLiveView() error {
 		}
 	}
 
+	err = s.changeResolution()
+	if err != nil {
+		return fmt.Errorf("failed to change resolution: %w", err)
+	}
+
 	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
