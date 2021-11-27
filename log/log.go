@@ -27,16 +27,10 @@ type ChildLogger struct {
 	level  logrus.Level
 }
 
-func NewChildLogger(parent *logrus.Logger, prefix string, debug bool) *ChildLogger {
+func NewChildLogger(parent *logrus.Logger, prefix string) *ChildLogger {
 	lc := &ChildLogger{
 		parent: parent,
 		prefix: prefix,
-	}
-
-	if debug {
-		lc.level = logrus.DebugLevel
-	} else {
-		lc.level = logrus.InfoLevel
 	}
 
 	return lc
@@ -110,20 +104,40 @@ func (l *ChildLogger) IsDebug() bool {
 	return l.level >= logrus.DebugLevel
 }
 
+func (l *ChildLogger) SetDebug(debug bool) {
+	if debug {
+		l.level = logrus.DebugLevel
+	} else {
+		l.level = logrus.InfoLevel
+	}
+}
+
 type Children struct {
+	Main *ChildLogger
 	USB  *ChildLogger
 	MTP  *ChildLogger
 	Data *ChildLogger
 	LV   *ChildLogger
 }
 
-func PrepareChildren(parent *logrus.Logger, usb, mtp, data, lv bool) *Children {
-	return &Children{
-		USB:  NewChildLogger(parent, "usb", usb),
-		MTP:  NewChildLogger(parent, "mtp", mtp),
-		Data: NewChildLogger(parent, "data", data),
-		LV:   NewChildLogger(parent, "lv", lv),
-	}
+var log = &Children{
+	Main: NewChildLogger(Root, "main"),
+	USB:  NewChildLogger(Root, "usb"),
+	MTP:  NewChildLogger(Root, "mtp"),
+	Data: NewChildLogger(Root, "data"),
+	LV:   NewChildLogger(Root, "lv"),
+}
+
+func SetLogLevel(main, usb, mtp, data, lv bool) {
+	log.Main.SetDebug(main)
+	log.USB.SetDebug(usb)
+	log.MTP.SetDebug(mtp)
+	log.Data.SetDebug(data)
+	log.LV.SetDebug(lv)
+}
+
+func GetLogger() *Children {
+	return log
 }
 
 func HTTPLogHandler(next http.Handler) http.Handler {

@@ -17,9 +17,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/puhitaku/mtplvcap/log"
-
 	"github.com/google/gousb"
+	"github.com/puhitaku/mtplvcap/log"
 
 	"golang.org/x/sync/errgroup"
 
@@ -43,7 +42,7 @@ func main() {
 		debugs[s] = true
 	}
 
-	logChildren := log.PrepareChildren(log.Root, debugs["usb"], debugs["mtp"], debugs["data"], debugs["server"])
+	log.SetLogLevel(debugs["main"], debugs["usb"], debugs["mtp"], debugs["data"], debugs["server"])
 
 	vid, err := strconv.ParseInt(strings.ReplaceAll(*vendorID, "0x", ""), 16, 64)
 	if err != nil {
@@ -55,7 +54,6 @@ func main() {
 		log.Root.WithField("prefix", "main").Fatalf("failed to parse PID: %s", err)
 	}
 
-	mtp.SetLogger(logChildren)
 	var dev mtp.Device
 
 	if *serverOnly {
