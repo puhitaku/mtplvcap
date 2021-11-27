@@ -8,6 +8,7 @@ const (
 	OC_NIKON_AfDrive         = 0x90C1
 	OC_NIKON_DeviceReady     = 0x90C8
 	DPC_NIKON_RecordingMedia = 0xD10B
+	DPC_NIKON_Resolution     = 0xD1AC
 )
 
 type Rotation int
@@ -28,6 +29,7 @@ const (
 )
 
 type RecordingMedia int8
+type Resolution     uint64
 
 const (
 	RecordingMediaCard  RecordingMedia = 0

@@ -524,6 +524,41 @@ func (s *LVServer) switchRecordMedia() error {
 	return nil
 }
 
+func (s *LVServer) changeResolution() error {
+	desc := DevicePropDesc{}
+	err := s.dev.GetDevicePropDesc(DPC_NIKON_Resolution, &desc)
+	if err != nil {
+		return fmt.Errorf("failed to get recording media: %s", err)
+	}
+
+	values, ok := desc.Form.(*PropDescEnumForm)
+	if !ok {
+		return fmt.Errorf("failed to assert returned value (DPC_NIKON_Resolution)")
+	}
+
+	var choices []uint64
+	for _, iface := range values.Values {
+		v, ok := iface.(uint64)
+		if !ok {
+			return fmt.Errorf("failed to assert a value in the array as uint64")
+		}
+		choices = append(choices, v)
+	}
+
+	fmt.Println(values)
+
+	payload := struct {
+		Resolution Resolution
+	}{
+		Resolution: Resolution(choices[len(choices)-1]),
+	}
+	err = s.dev.SetDevicePropValue(DPC_NIKON_Resolution, &payload)
+	if err != nil {
+		return fmt.Errorf("failed to SetDevicePropValue: %s", err)
+	}
+	return nil
+}
+
 func (s *LVServer) readLiveViewProhibitCondition() (string, error) {
 	// mtpLock must be locked by caller
 	var reasonRaw Uint32Value
