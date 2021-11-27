@@ -1,4 +1,4 @@
-package log
+package logging
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
-var Root = &logrus.Logger{
+var root = &logrus.Logger{
 	Out:   os.Stdout,
 	Level: logrus.TraceLevel,
 	Formatter: &prefixed.TextFormatter{
@@ -121,11 +121,11 @@ type Children struct {
 }
 
 var log = &Children{
-	Main: NewChildLogger(Root, "main"),
-	USB:  NewChildLogger(Root, "usb"),
-	MTP:  NewChildLogger(Root, "mtp"),
-	Data: NewChildLogger(Root, "data"),
-	LV:   NewChildLogger(Root, "lv"),
+	Main: NewChildLogger(root, "main"),
+	USB:  NewChildLogger(root, "usb"),
+	MTP:  NewChildLogger(root, "mtp"),
+	Data: NewChildLogger(root, "data"),
+	LV:   NewChildLogger(root, "lv"),
 }
 
 func SetLogLevel(main, usb, mtp, data, lv bool) {
@@ -143,7 +143,7 @@ func GetLogger() *Children {
 func HTTPLogHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			Root.WithField("prefix", "http").Infof("%s %s %s", r.Method, r.URL.Path, r.RemoteAddr)
+			root.WithField("prefix", "http").Infof("%s %s %s", r.Method, r.URL.Path, r.RemoteAddr)
 		}()
 		next.ServeHTTP(w, r)
 	})

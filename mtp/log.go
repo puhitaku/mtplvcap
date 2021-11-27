@@ -1,7 +1,9 @@
 package mtp
 
-import log2 "github.com/puhitaku/mtplvcap/log"
+import (
+	"github.com/puhitaku/mtplvcap/logging"
+)
 
-var log = func() *log2.Children {
-	return log2.GetLogger()
+var log = func() *logging.Children {
+	return logging.GetLogger()
 }()
