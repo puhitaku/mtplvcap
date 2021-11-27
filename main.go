@@ -17,9 +17,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/puhitaku/mtplvcap/log"
-
 	"github.com/google/gousb"
+	"github.com/puhitaku/mtplvcap/logging"
 
 	"golang.org/x/sync/errgroup"
 
@@ -43,23 +42,23 @@ func main() {
 		debugs[s] = true
 	}
 
-	logChildren := log.PrepareChildren(log.Root, debugs["usb"], debugs["mtp"], debugs["data"], debugs["server"])
+	logging.SetLogLevel(debugs["main"], debugs["usb"], debugs["mtp"], debugs["data"], debugs["server"])
+	log := logging.GetLogger().Main
 
 	vid, err := strconv.ParseInt(strings.ReplaceAll(*vendorID, "0x", ""), 16, 64)
 	if err != nil {
-		log.Root.WithField("prefix", "main").Fatalf("failed to parse VID: %s", err)
+		log.Fatalf("failed to parse VID: %s", err)
 	}
 
 	pid, err := strconv.ParseInt(strings.ReplaceAll(*productID, "0x", ""), 16, 64)
 	if err != nil {
-		log.Root.WithField("prefix", "main").Fatalf("failed to parse PID: %s", err)
+		log.Fatalf("failed to parse PID: %s", err)
 	}
 
-	mtp.SetLogger(logChildren)
 	var dev mtp.Device
 
 	if *serverOnly {
-		log.Root.WithField("prefix", "mtp").Info("server-only mode is activated, skipping USB initialization")
+		log.Info("server-only mode is activated, skipping USB initialization")
 	} else {
 		if *backendGo {
 			ctx := gousb.NewContext()
@@ -67,21 +66,21 @@ func main() {
 
 			devGo, err := mtp.SelectDeviceGoUSB(ctx, uint16(vid), uint16(pid))
 			if err != nil {
-				log.Root.WithField("prefix", "mtp").Fatalf("failed to detect MTP device: %s", err)
+				log.Fatalf("failed to detect MTP device: %s", err)
 			}
 			defer devGo.Close()
 			dev = devGo
 		} else {
 			devDirect, err := mtp.SelectDeviceDirect(uint16(vid), uint16(pid))
 			if err != nil {
-				log.Root.WithField("prefix", "mtp").Fatalf("failed to detect MTP devices: %v", err)
+				log.Fatalf("failed to detect MTP devices: %v", err)
 			}
 			defer devDirect.Close()
 			dev = devDirect
 		}
 
 		if err = dev.Configure(); err != nil {
-			log.Root.WithField("prefix", "mtp").Fatalf("configure failed: %v", err)
+			log.Fatalf("configure failed: %v", err)
 		}
 	}
 
@@ -95,7 +94,7 @@ func main() {
 			case <-ctx.Done():
 				return nil
 			case s := <-sigChan:
-				log.Root.WithField("prefix", "signal").Infof("caught signal: %s", s)
+				log.Infof("caught signal: %s", s)
 				return errors.New(s.String())
 			}
 		}
@@ -119,12 +118,12 @@ func main() {
 
 	srv := http.Server{
 		Addr:    fmt.Sprintf("%s:%d", *host, *port),
-		Handler: log.HTTPLogHandler(router),
+		Handler: logging.HTTPLogHandler(router),
 	}
 
 	eg.Go(func() error {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			log.Root.WithField("prefix", "http").Error(err)
+			log.Errorf("http server returned an error: %s", err)
 			return err
 		}
 		return nil
@@ -138,11 +137,11 @@ func main() {
 		return srv.Shutdown(ctx)
 	})
 
-	log.Root.WithField("prefix", "main").Info("started")
+	log.Info("started")
 
 	err = eg.Wait()
 	if err != nil {
-		log.Root.WithField("prefix", "main").Error(err)
+		log.Error(err)
 		os.Exit(1)
 	}
 }

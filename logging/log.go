@@ -1,4 +1,4 @@
-package log
+package logging
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
-var Root = &logrus.Logger{
+var root = &logrus.Logger{
 	Out:   os.Stdout,
 	Level: logrus.TraceLevel,
 	Formatter: &prefixed.TextFormatter{
@@ -27,16 +27,10 @@ type ChildLogger struct {
 	level  logrus.Level
 }
 
-func NewChildLogger(parent *logrus.Logger, prefix string, debug bool) *ChildLogger {
+func NewChildLogger(parent *logrus.Logger, prefix string) *ChildLogger {
 	lc := &ChildLogger{
 		parent: parent,
 		prefix: prefix,
-	}
-
-	if debug {
-		lc.level = logrus.DebugLevel
-	} else {
-		lc.level = logrus.InfoLevel
 	}
 
 	return lc
@@ -110,26 +104,46 @@ func (l *ChildLogger) IsDebug() bool {
 	return l.level >= logrus.DebugLevel
 }
 
+func (l *ChildLogger) SetDebug(debug bool) {
+	if debug {
+		l.level = logrus.DebugLevel
+	} else {
+		l.level = logrus.InfoLevel
+	}
+}
+
 type Children struct {
+	Main *ChildLogger
 	USB  *ChildLogger
 	MTP  *ChildLogger
 	Data *ChildLogger
 	LV   *ChildLogger
 }
 
-func PrepareChildren(parent *logrus.Logger, usb, mtp, data, lv bool) *Children {
-	return &Children{
-		USB:  NewChildLogger(parent, "usb", usb),
-		MTP:  NewChildLogger(parent, "mtp", mtp),
-		Data: NewChildLogger(parent, "data", data),
-		LV:   NewChildLogger(parent, "lv", lv),
-	}
+var log = &Children{
+	Main: NewChildLogger(root, "main"),
+	USB:  NewChildLogger(root, "usb"),
+	MTP:  NewChildLogger(root, "mtp"),
+	Data: NewChildLogger(root, "data"),
+	LV:   NewChildLogger(root, "lv"),
+}
+
+func SetLogLevel(main, usb, mtp, data, lv bool) {
+	log.Main.SetDebug(main)
+	log.USB.SetDebug(usb)
+	log.MTP.SetDebug(mtp)
+	log.Data.SetDebug(data)
+	log.LV.SetDebug(lv)
+}
+
+func GetLogger() *Children {
+	return log
 }
 
 func HTTPLogHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			Root.WithField("prefix", "http").Infof("%s %s %s", r.Method, r.URL.Path, r.RemoteAddr)
+			root.WithField("prefix", "http").Infof("%s %s %s", r.Method, r.URL.Path, r.RemoteAddr)
 		}()
 		next.ServeHTTP(w, r)
 	})

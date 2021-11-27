@@ -1,9 +1,9 @@
 package mtp
 
-import log_ "github.com/puhitaku/mtplvcap/log"
+import (
+	"github.com/puhitaku/mtplvcap/logging"
+)
 
-var log *log_.Children
-
-func SetLogger(l *log_.Children) {
-	log = l
-}
+var log = func() *logging.Children {
+	return logging.GetLogger()
+}()
