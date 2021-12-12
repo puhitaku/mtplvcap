@@ -13,51 +13,63 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 
 ### サポートするカメラ（多分動くものを含む）
 
-|機種 |LV 利用可    |ステータス        |確認した人              |
-|:----|:-----------:|:----------------:|:-----------------------|
-|D3   |Yes          |                  |動作確認をお待ちしています！|
-|D3X  |Yes          |                  |動作確認をお待ちしています！|
-|D3S  |Yes          |                  |動作確認をお待ちしています！|
-|D4   |Yes          |                  |動作確認をお待ちしています！|
-|D4S  |Yes          |                  |動作確認をお待ちしています！|
-|D5   |Yes          |                  |動作確認をお待ちしています！|
-|D6   |Yes          |:white_check_mark:|@puhitaku|
-|D90  |Yes          |:white_check_mark:|[@sachaos](https://github.com/sachaos)|
-|D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|追加の動作確認をお待ちしています！|
-|D300S|Yes          |                  |動作確認をお待ちしています！|
-|D500 |Yes          |:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
-|D600 |Yes          |:white_check_mark:|[@ohtayo](https://github.com/ohtayo)|
-|D610 |Yes          |:white_check_mark:|@hazlitt|
-|D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|追加の動作確認をお待ちしています！|
-|D750 |Yes          |:white_check_mark:||
-|D780 |Yes          |:white_check_mark:|@puhitaku|
-|D800 |Yes          |:white_check_mark:|[@pcjpnet](https://twitter.com/pcjpnet)|
-|D800E|Yes          |:white_check_mark:|[@Higomon](https://github.com/Higomon)|
-|D810 |Yes          |                  |動作確認をお待ちしています！|
-|D850 |Yes          |:white_check_mark:|@puhitaku|
-|D3200|Yes          |:white_check_mark:|@Ivisi|
-|D3300|Yes          |:white_check_mark:|[@unasuke](https://github.com/unasuke)|
-|D3400|Yes          |:white_check_mark:|@chefaustin|
-|D3500|Yes          |:white_check_mark:|[@fedegratti](https://github.com/fedegratti)|
-|D5000|Yes          |:white_check_mark:|[@rch850](https://github.com/rch850)|
-|D5100|Yes          |:white_check_mark:|[@shigureanko](https://twitter.com/shigureanko)|
-|D5200|Yes          |:white_check_mark:|[@ThatSameer](https://twitter.com/ThatSameer)|
-|D5300|Yes          |:white_check_mark:|@puhitaku|
-|D5500|Yes          |:white_check_mark:|[@nasustim](https://github.com/nasustim)|
-|D5600|Yes          |:white_check_mark:|[@tadasv](https://github.com/tadasv)|
-|D7000|Yes          |:white_check_mark:|@takashi0314|
-|D7100|Yes          |:white_check_mark:|@TheMidlander|
-|D7200|Yes          |:white_check_mark:|[@br_spike_love](https://twitter.com/br_spike_love)|
-|D7500|Yes          |:white_check_mark:|@puhitaku|
-|Df   |Yes          |:white_check_mark:||
-|Z5   |Yes          |:white_check_mark:|[@ag-eitilt](https://github.com/ag-eitilt)|
-|Z6   |Yes          |:white_check_mark:|@ShadowXii|
-|Z6II |Yes          |:white_check_mark:|@puhitaku|
-|Z7   |Yes          |:white_check_mark:|@zacheadams|
-|Z7II |Yes          |:white_check_mark:|@puhitaku|
-|Z9   |Yes          |                  |未発売だが多分動く :wink:|
-|Z50  |Yes          |:white_check_mark:|@puhitaku|
-|Z fc |Yes          |:white_check_mark:|@puhitaku|
+|機種 |LV 利用可    |ステータス        |[高解像度](#hr)   |確認した人              |
+|:----|:-----------:|:----------------:|:----------------:|:-----------------------|
+|D3   |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D3X  |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D3S  |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D4   |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D4S  |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D5   |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D6   |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|D90  |Yes          |:white_check_mark:|?                 |[@sachaos](https://github.com/sachaos)|
+|D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|?|追加の動作確認をお待ちしています！|
+|D300S|Yes          |                  |?                 |動作確認をお待ちしています！|
+|D500 |Yes          |:white_check_mark:|:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
+|D600 |Yes          |:white_check_mark:|?                 |[@ohtayo](https://github.com/ohtayo)|
+|D610 |Yes          |:white_check_mark:|?                 |@hazlitt|
+|D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|?|追加の動作確認をお待ちしています！|
+|D750 |Yes          |:white_check_mark:|?                 ||
+|D780 |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|D800 |Yes          |:white_check_mark:|?                 |[@pcjpnet](https://twitter.com/pcjpnet)|
+|D800E|Yes          |:white_check_mark:|?                 |[@Higomon](https://github.com/Higomon)|
+|D810 |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D850 |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|D3200|Yes          |:white_check_mark:|?                 |@Ivisi|
+|D3300|Yes          |:white_check_mark:|?                 |[@unasuke](https://github.com/unasuke)|
+|D3400|Yes          |:white_check_mark:|?                 |@chefaustin|
+|D3500|Yes          |:white_check_mark:|?                 |[@fedegratti](https://github.com/fedegratti)|
+|D5000|Yes          |:white_check_mark:|?                 |[@rch850](https://github.com/rch850)|
+|D5100|Yes          |:white_check_mark:|?                 |[@shigureanko](https://twitter.com/shigureanko)|
+|D5200|Yes          |:white_check_mark:|?                 |[@ThatSameer](https://twitter.com/ThatSameer)|
+|D5300|Yes          |:white_check_mark:|                  |@puhitaku|
+|D5500|Yes          |:white_check_mark:|?                 |[@nasustim](https://github.com/nasustim)|
+|D5600|Yes          |:white_check_mark:|?                 |[@tadasv](https://github.com/tadasv)|
+|D7000|Yes          |:white_check_mark:|?                 |@takashi0314|
+|D7100|Yes          |:white_check_mark:|?                 |@TheMidlander|
+|D7200|Yes          |:white_check_mark:|?                 |[@br_spike_love](https://twitter.com/br_spike_love)|
+|D7500|Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|Df   |Yes          |:white_check_mark:|?                 ||
+|Z5   |Yes          |:white_check_mark:|:thinking:        |[@ag-eitilt](https://github.com/ag-eitilt)|
+|Z6   |Yes          |:white_check_mark:|:thinking:        |@ShadowXii|
+|Z6II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z7   |Yes          |:white_check_mark:|:thinking:        |@zacheadams|
+|Z7II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z9   |Yes          |                  |?                 |未発売だが多分動く :wink:|
+|Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z fc |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+
+
+<h4 id="hr">「高解像度」とは？</h4>
+
+通常のフレーム解像度はいずれの機種も 640x424 ですが、比較的新しい機種は 1024xXXX のような高い解像度をサポートしている場合があります。いくつかのモデルは既に解像度の変更ができていますが、サポートしていながら解像度の変更に失敗する機種もあります。[この問題](https://github.com/puhitaku/mtplvcap/issues/44)は、今後解決方法が判明次第実装し解決する予定です。
+
+|マーク            |説明|
+|:----------------:|:---|
+|`?`               |未確認|
+|空白              |高解像度をサポートしない|
+|:thinking:        |高解像度をサポートしているが設定に失敗する|
+|:white_check_mark:|高解像度をサポートしていて設定も成功する|
 
 
 ### サポートしないカメラ
@@ -352,6 +364,8 @@ Usage of ./mtplvcap:
         comma-separated list of debugging options: usb, data, mtp, server
   -host string
         hostname: default = localhost, specify 0.0.0.0 for public access (default "localhost")
+  -max-resolution
+        change the resolution to the max (experimental)
   -port int
         port: default = 42839 (default 42839)
   -product-id string
