@@ -40,7 +40,8 @@ type LVServer struct {
 	model   Model
 	dev     Device
 	mtpLock sync.Mutex
-	dummy   bool
+	dummy         bool
+	maxResolution bool
 
 	afInterval *atomic.Int64
 	afTicker   *MutableTicker
@@ -52,7 +53,7 @@ type LVServer struct {
 	ctx context.Context
 }
 
-func NewLVServer(dev Device, ctx context.Context) *LVServer {
+func NewLVServer(ctx context.Context, dev Device, maxResolution bool) *LVServer {
 	eg, egCtx := errgroup.WithContext(ctx)
 
 	return &LVServer{
@@ -66,6 +67,8 @@ func NewLVServer(dev Device, ctx context.Context) *LVServer {
 
 		dev:   dev,
 		dummy: dev == nil,
+
+		maxResolution: maxResolution,
 
 		afInterval: atomic.NewInt64(5),
 		afTicker:   NewMutableTicker(5 * time.Second),
@@ -480,6 +483,13 @@ func (s *LVServer) startLiveView() error {
 		}
 	}
 
+	if s.maxResolution {
+		err = s.changeResolution()
+		if err != nil {
+			log.LV.Warningf("failed to change the image resolution (%s); if it affects capturing frames, consider disabling `-max-resolution`")
+		}
+	}
+
 	err = s.dev.RunTransactionWithNoParams(OC_NIKON_StartLiveView)
 	if err != nil {
 		if casted, ok := err.(RCError); ok && uint16(casted) == RC_NIKON_InvalidStatus {
@@ -520,6 +530,43 @@ func (s *LVServer) switchRecordMedia() error {
 		}
 	} else {
 		log.LV.Warning("unexpected format of the RecordingMedia property")
+	}
+	return nil
+}
+
+func (s *LVServer) changeResolution() error {
+	log.LV.Infof("getting available resolutions")
+	desc := DevicePropDesc{}
+	err := s.dev.GetDevicePropDesc(DPC_NIKON_Resolution, &desc)
+	if err != nil {
+		return fmt.Errorf("failed to get recording media: %s", err)
+	}
+
+	values, ok := desc.Form.(*PropDescEnumForm)
+	if !ok {
+		return fmt.Errorf("failed to assert returned value (DPC_NIKON_Resolution)")
+	}
+
+	var choices []uint64
+	for _, iface := range values.Values {
+		v, ok := iface.(uint64)
+		if !ok {
+			return fmt.Errorf("failed to assert a value in the array as uint64")
+		}
+		choices = append(choices, v)
+	}
+
+	log.LV.Infof("available resolutions (higher is larger): %v", choices)
+	log.LV.Infof("automatically use the largest choice: %d", choices[len(choices)-1])
+
+	payload := struct {
+		Resolution Resolution
+	}{
+		Resolution: Resolution(choices[len(choices)-1]),
+	}
+	err = s.dev.SetDevicePropValue(DPC_NIKON_Resolution, &payload)
+	if err != nil {
+		return fmt.Errorf("failed to SetDevicePropValue: %s", err)
 	}
 	return nil
 }

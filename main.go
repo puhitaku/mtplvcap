@@ -34,6 +34,7 @@ func main() {
 	serverOnly := flag.Bool("server-only", false, "serve frontend without opening a DSLR (for devevelopment)")
 	vendorID := flag.String("vendor-id", "0x0", "VID of the camera to search (in hex), default=0x0 (all)")
 	productID := flag.String("product-id", "0x0", "PID of the camera to search (in hex), default=0x0 (all)")
+	maxResolution := flag.Bool("max-resolution", false, "change the resolution to the max (experimental)")
 
 	flag.Parse()
 
@@ -100,7 +101,7 @@ func main() {
 		}
 	})
 
-	lvs := mtp.NewLVServer(dev, ctx)
+	lvs := mtp.NewLVServer(ctx, dev, *maxResolution)
 	eg.Go(lvs.Run)
 
 	router := http.NewServeMux()

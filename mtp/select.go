@@ -139,7 +139,9 @@ func SelectDeviceDirect(vid, pid uint16) (*DeviceDirect, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer l.Done()
+	if len(l) > 0 {
+		defer l.Done()
+	}
 
 	var devs []*DeviceDirect
 	for _, d := range l {
