@@ -89,15 +89,13 @@ jobs:
 
   build-mac:
     macos:
-      xcode: 11.1.0
+      xcode: 12.4.0
     resource_class: medium
     steps:
       - checkout
       - run:
           name: Update Homebrew
           command: |
-            git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow
-            git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask fetch --unshallow
             brew update
       - run:
           name: Install prerequisites
