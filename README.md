@@ -62,13 +62,13 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 
 <h4 id="hr">What is "High Res"?</h4>
 
-While the default resolution is 640x424 for all models, newer models support capturing high res image like 1024xXXX. Changing the resolutions for some models succeeds but some do not. This problem is tracked in [an issue](https://github.com/puhitaku/mtplvcap/issues/44) and may be resolved when the right method to change the resolution is found.
+While the default resolution is 640x424 for all models, newer models support capturing high res image like 1024xXXX. Changing the resolutions for some models succeeds but some do not. This problem is tracked in [an issue](https://github.com/puhitaku/mtplvcap/issues/56) and may be resolved when the right method to change the resolution is found.
 
 |Icon              |Meaning|
 |:----------------:|:------|
 |`?`               |Untested|
 |Blank             |It has no higher resolutions|
-|:thinking:        |It replies higher resolutions but setting the resolution fails|
+|:thinking:        |It replies higher resolutions but not confirmed to work (confirmation report is much appreciated)|
 |:white_check_mark:|It replies higher resolutions and setting the resolution succeeds|
 
 
