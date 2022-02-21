@@ -29,7 +29,15 @@ const (
 )
 
 type RecordingMedia int8
-type Resolution     uint64
+type Resolution64 uint64
+type Resolution8    uint8
+
+type ResolutionType int
+
+const (
+	ResolutionType64 ResolutionType = iota
+	ResolutionType8
+)
 
 const (
 	RecordingMediaCard  RecordingMedia = 0
@@ -39,6 +47,7 @@ const (
 type Model struct {
 	Name             string
 	HeaderSize       int
+	ResolutionType   ResolutionType
 	QuirkSwitchMedia bool
 }
 
@@ -119,6 +128,11 @@ var models = ModelMap{
 		Name:       "D5600",
 		HeaderSize: 384,
 	},
+	"D6": {
+		Name:       "D6",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
 	"D600": {
 		Name:       "D600",
 		HeaderSize: 384,
@@ -134,6 +148,11 @@ var models = ModelMap{
 	"D750": {
 		Name:       "D750",
 		HeaderSize: 384,
+	},
+	"D780": {
+		Name:       "D780",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
 	},
 	"D7000": {
 		Name:       "D7000",
@@ -151,9 +170,36 @@ var models = ModelMap{
 	"Z6": {
 		Name:       "Z6",
 		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
+	"Z6II": {
+		Name:       "Z6II",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
 	},
 	"Z7": {
 		Name:       "Z7",
 		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
+	"Z7II": {
+		Name:       "Z7II",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
+	"Z9": {
+		Name:       "Z9",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
+	"Z50": {
+		Name:       "Z50",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
+	},
+	"Zfc": {
+		Name:       "Zfc",
+		HeaderSize: 384,
+		ResolutionType: ResolutionType8,
 	},
 }
