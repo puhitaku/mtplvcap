@@ -486,7 +486,7 @@ func (s *LVServer) startLiveView() error {
 	if s.maxResolution {
 		err = s.changeResolution()
 		if err != nil {
-			log.LV.Warningf("failed to change the image resolution (%s); if it affects capturing frames, consider disabling `-max-resolution`")
+			log.LV.Warningf("failed to change the image resolution (%s); if it affects capturing frames, consider disabling `-max-resolution`", err)
 		}
 	}
 
