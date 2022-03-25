@@ -35,8 +35,8 @@ type Resolution8 uint8
 type ResolutionType int
 
 const (
-	ResolutionType64 ResolutionType = iota
-	ResolutionType8
+	ResolutionType8 ResolutionType = iota
+	ResolutionType64
 )
 
 const (
