@@ -37,9 +37,9 @@ type LVServer struct {
 	controlClients map[*websocket.Conn]bool
 	controlLock    sync.Mutex
 
-	model   Model
-	dev     Device
-	mtpLock sync.Mutex
+	model         Model
+	dev           Device
+	mtpLock       sync.Mutex
 	dummy         bool
 	maxResolution bool
 
