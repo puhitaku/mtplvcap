@@ -30,13 +30,13 @@ const (
 
 type RecordingMedia int8
 type Resolution64 uint64
-type Resolution8    uint8
+type Resolution8 uint8
 
 type ResolutionType int
 
 const (
-	ResolutionType64 ResolutionType = iota
-	ResolutionType8
+	ResolutionType8 ResolutionType = iota
+	ResolutionType64
 )
 
 const (
@@ -79,28 +79,28 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D3": {
-		Name:       "D3",
-		HeaderSize: 128,
+		Name:             "D3",
+		HeaderSize:       128,
 		QuirkSwitchMedia: true,
 	},
 	"D3s": {
-		Name:       "D3s",
-		HeaderSize: 128,
+		Name:             "D3s",
+		HeaderSize:       128,
 		QuirkSwitchMedia: true,
 	},
 	"D3X": {
-		Name:       "D3X",
-		HeaderSize: 64,
+		Name:             "D3X",
+		HeaderSize:       64,
 		QuirkSwitchMedia: true,
 	},
 	"D300": {
-		Name:       "D300",
-		HeaderSize: 64,
+		Name:             "D300",
+		HeaderSize:       64,
 		QuirkSwitchMedia: true,
 	},
 	"D300s": {
-		Name:       "D300s",
-		HeaderSize: 64,
+		Name:             "D300s",
+		HeaderSize:       64,
 		QuirkSwitchMedia: true,
 	},
 	"D3200": {
@@ -129,8 +129,8 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D6": {
-		Name:       "D6",
-		HeaderSize: 384,
+		Name:           "D6",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"D600": {
@@ -150,8 +150,8 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D780": {
-		Name:       "D780",
-		HeaderSize: 384,
+		Name:           "D780",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"D7000": {
@@ -163,43 +163,43 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D90": {
-		Name:       "D90",
-		HeaderSize: 128,
+		Name:             "D90",
+		HeaderSize:       128,
 		QuirkSwitchMedia: true,
 	},
 	"Z6": {
-		Name:       "Z6",
-		HeaderSize: 384,
+		Name:           "Z6",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Z6II": {
-		Name:       "Z6II",
-		HeaderSize: 384,
+		Name:           "Z6II",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Z7": {
-		Name:       "Z7",
-		HeaderSize: 384,
+		Name:           "Z7",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Z7II": {
-		Name:       "Z7II",
-		HeaderSize: 384,
+		Name:           "Z7II",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Z9": {
-		Name:       "Z9",
-		HeaderSize: 384,
+		Name:           "Z9",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Z50": {
-		Name:       "Z50",
-		HeaderSize: 384,
+		Name:           "Z50",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 	"Zfc": {
-		Name:       "Zfc",
-		HeaderSize: 384,
+		Name:           "Zfc",
+		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
 }

@@ -37,9 +37,9 @@ type LVServer struct {
 	controlClients map[*websocket.Conn]bool
 	controlLock    sync.Mutex
 
-	model   Model
-	dev     Device
-	mtpLock sync.Mutex
+	model         Model
+	dev           Device
+	mtpLock       sync.Mutex
 	dummy         bool
 	maxResolution bool
 
@@ -559,28 +559,31 @@ func (s *LVServer) changeResolution() error {
 	log.LV.Infof("available resolutions (higher is larger): %v", choices)
 	log.LV.Infof("automatically use the largest choice: %d", choices[len(choices)-1])
 
-
-	var payload interface{}
-
 	switch s.model.ResolutionType {
 	case ResolutionType64:
-		payload = struct {
+		payload := struct {
 			Resolution Resolution64
 		}{
 			Resolution: Resolution64(choices[len(choices)-1]),
 		}
+
+		err = s.dev.SetDevicePropValue(DPC_NIKON_Resolution, &payload)
+		if err != nil {
+			return fmt.Errorf("failed to SetDevicePropValue: %s", err)
+		}
 	case ResolutionType8:
-		payload = struct {
+		payload := struct {
 			Resolution Resolution8
 		}{
 			Resolution: Resolution8(choices[len(choices)-1]),
 		}
+
+		err = s.dev.SetDevicePropValue(DPC_NIKON_Resolution, &payload)
+		if err != nil {
+			return fmt.Errorf("failed to SetDevicePropValue: %s", err)
+		}
 	}
 
-	err = s.dev.SetDevicePropValue(DPC_NIKON_Resolution, &payload)
-	if err != nil {
-		return fmt.Errorf("failed to SetDevicePropValue: %s", err)
-	}
 	return nil
 }
 
