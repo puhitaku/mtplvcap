@@ -36,6 +36,8 @@ type LVServer struct {
 	streamLock     sync.Mutex
 	controlClients map[*websocket.Conn]bool
 	controlLock    sync.Mutex
+    motionClients  map[*MJPEGResponseWriter]bool
+	motionLock     sync.Mutex
 
 	model         Model
 	dev           Device
@@ -64,6 +66,7 @@ func NewLVServer(ctx context.Context, dev Device, maxResolution bool) *LVServer 
 
 		streamClients:  map[*websocket.Conn]bool{},
 		controlClients: map[*websocket.Conn]bool{},
+		motionClients:  map[*MJPEGResponseWriter]bool{},
 
 		dev:   dev,
 		dummy: dev == nil,
@@ -229,6 +232,29 @@ func (s *LVServer) unregisterControlClient(c *websocket.Conn) {
 	s.controlLock.Lock()
 	defer s.controlLock.Unlock()
 	delete(s.controlClients, c)
+}
+
+func (s *LVServer) HandleMotionJPEG(w http.ResponseWriter, r *http.Request) {
+	log.LV.Info("handling GET /view.jpeg")
+
+	writer := NewMJPEGResponseWriter(w)
+	s.registerMotionClient(writer)
+
+	<-r.Context().Done()
+
+	s.unregisterMotionClient(writer)
+}
+
+func (s *LVServer) registerMotionClient(w *MJPEGResponseWriter) {
+	s.controlLock.Lock()
+	defer s.controlLock.Unlock()
+	s.motionClients[w] = true
+}
+
+func (s *LVServer) unregisterMotionClient(w *MJPEGResponseWriter) {
+	s.motionLock.Lock()
+	defer s.motionLock.Unlock()
+	delete(s.motionClients, w)
 }
 
 // Workers
@@ -402,6 +428,9 @@ func (s *LVServer) workerBroadcastFrame() error {
 		s.streamLock.Lock()
 		defer s.streamLock.Unlock()
 
+		s.motionLock.Lock()
+		defer s.motionLock.Unlock()
+
 		b64 := base64.StdEncoding.EncodeToString(jpeg)
 
 		for c := range s.streamClients {
@@ -410,6 +439,13 @@ func (s *LVServer) workerBroadcastFrame() error {
 				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
 			}
 		}
+
+        for w := range s.motionClients {
+			err := w.Write(jpeg)
+			if err != nil {
+				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
+			}
+        }
 	}
 
 	for {
