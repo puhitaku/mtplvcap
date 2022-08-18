@@ -114,6 +114,7 @@ func main() {
 		_, _ = io.Copy(w, f)
 	})
 	router.HandleFunc("/view.mjpeg", lvs.HandleMotionJPEG)
+	router.HandleFunc("/snapshot", lvs.HandleSnapshot)
 	router.HandleFunc("/stream", lvs.HandleStream)
 	router.HandleFunc("/control", lvs.HandleControl)
 	router.Handle("/assets/", http.FileServer(public.Root))
