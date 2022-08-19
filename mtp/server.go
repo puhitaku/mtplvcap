@@ -36,9 +36,9 @@ type LVServer struct {
 	streamLock      sync.Mutex
 	controlClients  map[*websocket.Conn]bool
 	controlLock     sync.Mutex
-    motionClients   map[*MJPEGResponseWriter]bool
+	motionClients   map[*MJPEGResponseWriter]bool
 	motionLock      sync.Mutex
-    snapshotClients map[*SnapshotResponseWriter]bool
+	snapshotClients map[*SnapshotResponseWriter]bool
 	snapshotLock    sync.Mutex
 
 	model         Model
@@ -238,7 +238,7 @@ func (s *LVServer) unregisterControlClient(c *websocket.Conn) {
 }
 
 func (s *LVServer) HandleMotionJPEG(w http.ResponseWriter, r *http.Request) {
-	log.LV.Info("handling GET /view.jpeg")
+	log.LV.Info("handling GET /mjpeg")
 
 	writer := NewMJPEGResponseWriter(w)
 	s.registerMotionClient(writer)
@@ -459,19 +459,19 @@ func (s *LVServer) workerBroadcastFrame() error {
 			}
 		}
 
-        for w := range s.motionClients {
+		for w := range s.motionClients {
 			err := w.Write(jpeg)
 			if err != nil {
 				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
 			}
-        }
+		}
 
-        for w := range s.snapshotClients {
+		for w := range s.snapshotClients {
 			err := w.Write(jpeg)
 			if err != nil {
 				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
 			}
-        }
+		}
 	}
 
 	for {

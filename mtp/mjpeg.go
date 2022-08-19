@@ -16,7 +16,7 @@ type MJPEGResponseWriter struct {
 func NewMJPEGResponseWriter(w http.ResponseWriter) *MJPEGResponseWriter {
 	boundary := randomBoundary()
 
-	w.Header().Set("Content-Type", "multipart/x-mixed-replace; boundary=" + boundary)
+	w.Header().Set("Content-Type", "multipart/x-mixed-replace; boundary="+boundary)
 
 	return &MJPEGResponseWriter{
 		boundary: boundary,
