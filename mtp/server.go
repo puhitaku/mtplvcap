@@ -261,8 +261,8 @@ func (s *LVServer) HandleSnapshot(w http.ResponseWriter, r *http.Request) {
 	var jpeg []byte
 	jpeg = s.copyFrame()
 
-	writer := NewSnapshotResponseWriter(w)
-	writer.Write(jpeg)
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Write(jpeg)
 }
 
 // Workers
