@@ -367,6 +367,9 @@ Usage of ./mtplvcap:
 #### Watch incoming frames
 
  - `http://localhost:42839/view` will show the captured frames
+ - `http://localhost:42839/mjpeg` will serve a bare MJPEG stream
+   (suitable to record a timelapse with OctoPrint etc.)
+ - `http://localhost:42839/snapshot` will return the latest JPEG frame
 
 
 #### Control your camera on your browser

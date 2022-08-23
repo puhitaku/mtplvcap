@@ -380,6 +380,9 @@ Usage of ./mtplvcap:
 #### 撮られている映像を見る
 
  - `http://localhost:42839/view` を開くとキャプチャされたフレームが見えます
+ - `http://localhost:42839/mjpeg` を開くと MJPEG ストリームを返します
+   （OctoPrint でタイムラプスを撮影する時などに適しています）
+ - `http://localhost:42839/snapshot` を開くと最新の JPEG フレーム画像が見えます
 
 
 #### ブラウザでカメラを制御する
