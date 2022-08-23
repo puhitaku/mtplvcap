@@ -31,15 +31,13 @@ type LVServer struct {
 	info     InfoPayload
 	infoLock sync.Mutex
 
-	upgrader        websocket.Upgrader
-	streamClients   map[*websocket.Conn]bool
-	streamLock      sync.Mutex
-	controlClients  map[*websocket.Conn]bool
-	controlLock     sync.Mutex
-	motionClients   map[*MJPEGResponseWriter]bool
-	motionLock      sync.Mutex
-	snapshotClients map[*SnapshotResponseWriter]bool
-	snapshotLock    sync.Mutex
+	upgrader       websocket.Upgrader
+	streamClients  map[*websocket.Conn]bool
+	streamLock     sync.Mutex
+	controlClients map[*websocket.Conn]bool
+	controlLock    sync.Mutex
+	motionClients  map[*MJPEGResponseWriter]bool
+	motionLock     sync.Mutex
 
 	model         Model
 	dev           Device
@@ -66,10 +64,9 @@ func NewLVServer(ctx context.Context, dev Device, maxResolution bool) *LVServer 
 
 		fpsRate: ratecounter.NewRateCounter(time.Second),
 
-		streamClients:   map[*websocket.Conn]bool{},
-		controlClients:  map[*websocket.Conn]bool{},
-		motionClients:   map[*MJPEGResponseWriter]bool{},
-		snapshotClients: map[*SnapshotResponseWriter]bool{},
+		streamClients:  map[*websocket.Conn]bool{},
+		controlClients: map[*websocket.Conn]bool{},
+		motionClients:  map[*MJPEGResponseWriter]bool{},
 
 		dev:   dev,
 		dummy: dev == nil,
@@ -261,16 +258,11 @@ func (s *LVServer) unregisterMotionClient(w *MJPEGResponseWriter) {
 }
 
 func (s *LVServer) HandleSnapshot(w http.ResponseWriter, r *http.Request) {
-	s.controlLock.Lock()
-	writer := NewSnapshotResponseWriter(w)
-	s.snapshotClients[writer] = true
-	s.controlLock.Unlock()
+	var jpeg []byte
+	jpeg = s.copyFrame()
 
-	<-writer.Context.Done()
-
-	s.controlLock.Lock()
-	delete(s.snapshotClients, writer)
-	s.controlLock.Unlock()
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Write(jpeg)
 }
 
 // Workers
@@ -447,9 +439,6 @@ func (s *LVServer) workerBroadcastFrame() error {
 		s.motionLock.Lock()
 		defer s.motionLock.Unlock()
 
-		s.snapshotLock.Lock()
-		defer s.snapshotLock.Unlock()
-
 		b64 := base64.StdEncoding.EncodeToString(jpeg)
 
 		for c := range s.streamClients {
@@ -460,13 +449,6 @@ func (s *LVServer) workerBroadcastFrame() error {
 		}
 
 		for w := range s.motionClients {
-			err := w.Write(jpeg)
-			if err != nil {
-				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
-			}
-		}
-
-		for w := range s.snapshotClients {
 			err := w.Write(jpeg)
 			if err != nil {
 				log.LV.Errorf("workerBroadcastFrame: failed to send a frame: %s", err)
