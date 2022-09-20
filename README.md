@@ -57,7 +57,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |Z7II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z9   |Yes          |                  |?                 |It's not sold yet but hopefully works :wink:|
 |Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
-|Z fc |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
 
 <h4 id="hr">What is "High Res"?</h4>

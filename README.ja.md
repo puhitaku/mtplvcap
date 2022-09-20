@@ -57,7 +57,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |Z7II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z9   |Yes          |                  |?                 |未発売だが多分動く :wink:|
 |Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
-|Z fc |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
 
 <h4 id="hr">「高解像度」とは？</h4>
