@@ -167,37 +167,37 @@ var models = ModelMap{
 		HeaderSize:       128,
 		QuirkSwitchMedia: true,
 	},
-	"Z6": {
+	"6": {
 		Name:           "Z6",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Z6II": {
+	"6_2": {
 		Name:           "Z6II",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Z7": {
+	"7": {
 		Name:           "Z7",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Z7II": {
+	"7_2": {
 		Name:           "Z7II",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Z9": {
+	"9": {
 		Name:           "Z9",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Z50": {
+	"50": {
 		Name:           "Z50",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,
 	},
-	"Zfc": {
+	"fc": {
 		Name:           "Zfc",
 		HeaderSize:     384,
 		ResolutionType: ResolutionType8,

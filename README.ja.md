@@ -54,8 +54,8 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |Z6   |Yes          |:white_check_mark:|:white_check_mark:|@ShadowXii|
 |Z6II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z7   |Yes          |:white_check_mark:|:thinking:        |@zacheadams|
-|Z7II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
-|Z9   |Yes          |                  |?                 |未発売だが多分動く :wink:|
+|Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
 |Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
