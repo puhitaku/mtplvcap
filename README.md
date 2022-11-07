@@ -54,8 +54,8 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |Z6   |Yes          |:white_check_mark:|:white_check_mark:|@ShadowXii|
 |Z6II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z7   |Yes          |:white_check_mark:|:thinking:        |@zacheadams|
-|Z7II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
-|Z9   |Yes          |                  |?                 |It's not sold yet but hopefully works :wink:|
+|Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
 |Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
 |Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
