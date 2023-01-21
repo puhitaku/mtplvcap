@@ -35,13 +35,13 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D800E|Yes          |:white_check_mark:|?                 |[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |?                 |動作確認をお待ちしています！|
 |D850 |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|D3200|Yes          |:white_check_mark:|?                 |@Ivisi|
-|D3300|Yes          |:white_check_mark:|?                 |[@unasuke](https://github.com/unasuke)|
+|D3200|Yes          |:white_check_mark:|                  |@Ivisi|
+|D3300|Yes          |:white_check_mark:|                  |[@unasuke](https://github.com/unasuke)|
 |D3400|Yes          |:white_check_mark:|?                 |@chefaustin|
 |D3500|Yes          |:white_check_mark:|?                 |[@fedegratti](https://github.com/fedegratti)|
-|D5000|Yes          |:white_check_mark:|?                 |[@rch850](https://github.com/rch850)|
-|D5100|Yes          |:white_check_mark:|?                 |[@shigureanko](https://twitter.com/shigureanko)|
-|D5200|Yes          |:white_check_mark:|?                 |[@ThatSameer](https://twitter.com/ThatSameer)|
+|D5000|Yes          |:white_check_mark:|                  |[@rch850](https://github.com/rch850)|
+|D5100|Yes          |:white_check_mark:|                  |[@shigureanko](https://twitter.com/shigureanko)|
+|D5200|Yes          |:white_check_mark:|                  |[@ThatSameer](https://twitter.com/ThatSameer)|
 |D5300|Yes          |:white_check_mark:|                  |@puhitaku|
 |D5500|Yes          |:white_check_mark:|?                 |[@nasustim](https://github.com/nasustim)|
 |D5600|Yes          |:white_check_mark:|?                 |[@tadasv](https://github.com/tadasv)|
@@ -52,7 +52,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |Df   |Yes          |:white_check_mark:|?                 ||
 |Z5   |Yes          |:white_check_mark:|:thinking:        |[@ag-eitilt](https://github.com/ag-eitilt)|
 |Z6   |Yes          |:white_check_mark:|:white_check_mark:|@ShadowXii|
-|Z6II |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z6II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z7   |Yes          |:white_check_mark:|:thinking:        |@zacheadams|
 |Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
