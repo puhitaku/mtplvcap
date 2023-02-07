@@ -21,7 +21,8 @@ type DeviceDirect struct {
 	h   *usb.DeviceHandle
 	dev *usb.Device
 
-	claimed bool
+	claimed  bool
+	detached bool
 
 	// split off descriptor?
 	devDescr    usb.DeviceDescriptor
@@ -75,6 +76,15 @@ func (d *DeviceDirect) Close() error {
 			log.USB.Debugf("releaseInterface 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
 		}
 	}
+
+	if d.detached {
+		log.USB.Infof("Reattaching kernel driver")
+		err := d.h.AttachKernelDriver(d.ifaceDescr.InterfaceNumber)
+		if d.Debug.USB {
+			log.USB.Debugf("attachKernelDriver 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
+		}
+	}
+
 	err := d.h.Close()
 	d.h = nil
 
@@ -151,6 +161,8 @@ func (d *DeviceDirect) Open() error {
 			if err != nil {
 				return fmt.Errorf("failed to detach the kernel driver: %w", err)
 			}
+
+			d.detached = true
 		}
 	}
 
