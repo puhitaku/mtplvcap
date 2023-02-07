@@ -222,6 +222,8 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 
 ### macOS
 
+:bangbang: macOS Ventura をお使いの方へ: `mtplvcap` コマンドは `sudo` 付きで実行してください。背景や理由については [#68](https://github.com/puhitaku/mtplvcap/issues/68) をご覧ください。
+
 #### 1. 依存パッケージをインストールする
 1. [Homebrew](https://brew.sh/)をインストールします
 
