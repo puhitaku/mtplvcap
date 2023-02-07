@@ -90,18 +90,19 @@ func (d *DeviceDirect) Done() {
 // Claims the USB interface of the device.
 func (d *DeviceDirect) claim() error {
 	if d.h == nil {
-		return fmt.Errorf("mtp: claim: device not open")
+		return fmt.Errorf("device not open")
 	}
 
 	err := d.h.ClaimInterface(d.ifaceDescr.InterfaceNumber)
 	if d.Debug.USB {
 		log.USB.Debugf("claimInterface 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
 	}
-	if err == nil {
-		d.claimed = true
+	if err != nil {
+		return fmt.Errorf("failed to claim: %w", err)
 	}
 
-	return err
+	d.claimed = true
+	return nil
 }
 
 // Open opens an MTP device.
