@@ -212,6 +212,8 @@ To revert it back, follow the instruction:
 
 ### macOS
 
+:bangbang: For macOS Ventura users: please run `mtplvcap` command with `sudo`. See issue [#68](https://github.com/puhitaku/mtplvcap/issues/68) for the background and further info.
+
 #### 1. Install dependencies
 
 1. [Install Homebrew](https://brew.sh/) 

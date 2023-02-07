@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/hanwen/usb"
+	"github.com/matishsiao/goInfo"
 )
 
 // DeviceDirect implements mtp.Device.
@@ -18,7 +21,8 @@ type DeviceDirect struct {
 	h   *usb.DeviceHandle
 	dev *usb.Device
 
-	claimed bool
+	claimed  bool
+	detached bool
 
 	// split off descriptor?
 	devDescr    usb.DeviceDescriptor
@@ -72,6 +76,15 @@ func (d *DeviceDirect) Close() error {
 			log.USB.Debugf("releaseInterface 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
 		}
 	}
+
+	if d.detached {
+		log.USB.Infof("Reattaching kernel driver")
+		err := d.h.AttachKernelDriver(d.ifaceDescr.InterfaceNumber)
+		if d.Debug.USB {
+			log.USB.Debugf("attachKernelDriver 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
+		}
+	}
+
 	err := d.h.Close()
 	d.h = nil
 
@@ -90,18 +103,19 @@ func (d *DeviceDirect) Done() {
 // Claims the USB interface of the device.
 func (d *DeviceDirect) claim() error {
 	if d.h == nil {
-		return fmt.Errorf("mtp: claim: device not open")
+		return fmt.Errorf("device not open")
 	}
 
 	err := d.h.ClaimInterface(d.ifaceDescr.InterfaceNumber)
 	if d.Debug.USB {
 		log.USB.Debugf("claimInterface 0x%x, err: %v", d.ifaceDescr.InterfaceNumber, err)
 	}
-	if err == nil {
-		d.claimed = true
+	if err != nil {
+		return fmt.Errorf("failed to claim: %w", err)
 	}
 
-	return err
+	d.claimed = true
+	return nil
 }
 
 // Open opens an MTP device.
@@ -120,10 +134,43 @@ func (d *DeviceDirect) Open() error {
 		log.USB.Debugf("open, err: %v", err)
 	}
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open: %w", err)
 	}
 
-	d.claim()
+	// Detect macOS Ventura and detach the kernel driver
+	// https://github.com/puhitaku/mtplvcap/issues/68
+	if runtime.GOOS == "darwin" {
+		gi, err := goInfo.GetInfo()
+		if err != nil {
+			return fmt.Errorf("failed to get the macOS version: %w", err)
+		}
+
+		tokens := strings.Split(gi.Core, ".")
+		if len(tokens) != 3 {
+			return fmt.Errorf("failed to parse the macOS version: version string has unexpected format")
+		}
+
+		version, err := strconv.ParseInt(tokens[0], 10, 64)
+		if err != nil {
+			return fmt.Errorf("failed to parse the macOS version: %w", err)
+		}
+
+		if version >= 22 {
+			log.USB.Infof("detected macOS Ventura or newer: trying to detach the kernel driver")
+			err = d.h.DetachKernelDriver(d.ifaceDescr.InterfaceNumber)
+			if err != nil {
+				return fmt.Errorf("failed to detach the kernel driver: %w", err)
+			}
+
+			d.detached = true
+		}
+	}
+
+	err = d.claim()
+	if err != nil {
+		return fmt.Errorf("failed to claim: %w", err)
+	}
+
 	if d.ifaceDescr.InterfaceStringIndex == 0 {
 		// Some of the win8phones have no interface field.
 		info := DeviceInfo{}

@@ -6,6 +6,7 @@ require (
 	github.com/google/gousb v2.1.0+incompatible
 	github.com/gorilla/websocket v1.4.2
 	github.com/hanwen/usb v0.0.0-20141217151552-69aee4530ac7
+	github.com/matishsiao/goInfo v0.0.0-20210923090445-da2e3fa8d45f
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/onsi/ginkgo v1.14.0 // indirect
