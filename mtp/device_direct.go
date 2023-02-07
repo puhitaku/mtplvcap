@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/hanwen/usb"
+	"github.com/matishsiao/goInfo"
 )
 
 // DeviceDirect implements mtp.Device.
@@ -122,6 +125,33 @@ func (d *DeviceDirect) Open() error {
 	}
 	if err != nil {
 		return fmt.Errorf("failed to open: %w", err)
+	}
+
+	// Detect macOS Ventura and detach the kernel driver
+	// https://github.com/puhitaku/mtplvcap/issues/68
+	if runtime.GOOS == "darwin" {
+		gi, err := goInfo.GetInfo()
+		if err != nil {
+			return fmt.Errorf("failed to get the macOS version: %w", err)
+		}
+
+		tokens := strings.Split(gi.Core, ".")
+		if len(tokens) != 3 {
+			return fmt.Errorf("failed to parse the macOS version: version string has unexpected format")
+		}
+
+		version, err := strconv.ParseInt(tokens[0], 10, 64)
+		if err != nil {
+			return fmt.Errorf("failed to parse the macOS version: %w", err)
+		}
+
+		if version >= 22 {
+			log.USB.Infof("detected macOS Ventura or newer: trying to detach the kernel driver")
+			err = d.h.DetachKernelDriver(d.ifaceDescr.InterfaceNumber)
+			if err != nil {
+				return fmt.Errorf("failed to detach the kernel driver: %w", err)
+			}
+		}
 	}
 
 	err = d.claim()
