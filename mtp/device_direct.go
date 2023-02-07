@@ -120,10 +120,14 @@ func (d *DeviceDirect) Open() error {
 		log.USB.Debugf("open, err: %v", err)
 	}
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open: %w", err)
 	}
 
-	d.claim()
+	err = d.claim()
+	if err != nil {
+		return fmt.Errorf("failed to claim: %w", err)
+	}
+
 	if d.ifaceDescr.InterfaceStringIndex == 0 {
 		// Some of the win8phones have no interface field.
 		info := DeviceInfo{}
