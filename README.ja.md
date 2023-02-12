@@ -50,13 +50,13 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D7200|Yes          |:white_check_mark:|?                 |[@br_spike_love](https://twitter.com/br_spike_love)|
 |D7500|Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Df   |Yes          |:white_check_mark:|?                 ||
-|Z5   |Yes          |:white_check_mark:|:thinking:        |[@ag-eitilt](https://github.com/ag-eitilt)|
+|Z5   |Yes          |:white_check_mark:|:white_check_mark:|[@ag-eitilt](https://github.com/ag-eitilt)|
 |Z6   |Yes          |:white_check_mark:|:white_check_mark:|@ShadowXii|
 |Z6II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|Z7   |Yes          |:white_check_mark:|:thinking:        |@zacheadams|
+|Z7   |Yes          |:white_check_mark:|:white_check_mark:|@zacheadams|
 |Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
-|Z50  |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|Z50  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
 
