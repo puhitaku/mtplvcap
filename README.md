@@ -21,7 +21,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D4   |Yes          |                  |?                 |Please give me a report!|
 |D4S  |Yes          |                  |?                 |Please give me a report!|
 |D5   |Yes          |                  |?                 |Please give me a report!|
-|D6   |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|D6   |Yes          |:white_check_mark:|?                 |@puhitaku|
 |D90  |Yes          |:white_check_mark:|?                 |[@sachaos](https://github.com/sachaos)|
 |D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|?|I welcome additional reports!|
 |D300S|Yes          |                  |?                 |Please give me a report!|
@@ -30,7 +30,7 @@ mtplvcap + OBS turn your cameras into web cameras without HDMI capture device. E
 |D610 |Yes          |:white_check_mark:|?                 |@hazlitt|
 |D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|?|I welcome additional reports!|
 |D750 |Yes          |:white_check_mark:|?                 ||
-|D780 |Yes          |:white_check_mark:|:thinking:        |@puhitaku|
+|D780 |Yes          |:white_check_mark:|?                 |@puhitaku|
 |D800 |Yes          |:white_check_mark:|?                 |[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|?                 |[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |?                 |Please give me a report!|
