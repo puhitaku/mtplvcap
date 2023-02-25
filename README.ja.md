@@ -21,7 +21,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D4   |Yes          |                  |?                 |動作確認をお待ちしています！|
 |D4S  |Yes          |                  |?                 |動作確認をお待ちしています！|
 |D5   |Yes          |                  |?                 |動作確認をお待ちしています！|
-|D6   |Yes          |:white_check_mark:|?                 |@puhitaku|
+|D6   |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |D90  |Yes          |:white_check_mark:|?                 |[@sachaos](https://github.com/sachaos)|
 |D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|?|追加の動作確認をお待ちしています！|
 |D300S|Yes          |                  |?                 |動作確認をお待ちしています！|
@@ -30,7 +30,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D610 |Yes          |:white_check_mark:|?                 |@hazlitt|
 |D700 |?            |[#11](https://github.com/puhitaku/mtplvcap/issues/11)|?|追加の動作確認をお待ちしています！|
 |D750 |Yes          |:white_check_mark:|?                 ||
-|D780 |Yes          |:white_check_mark:|?                 |@puhitaku|
+|D780 |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |D800 |Yes          |:white_check_mark:|?                 |[@pcjpnet](https://twitter.com/pcjpnet)|
 |D800E|Yes          |:white_check_mark:|?                 |[@Higomon](https://github.com/Higomon)|
 |D810 |Yes          |                  |?                 |動作確認をお待ちしています！|
@@ -56,6 +56,7 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |Z7   |Yes          |:white_check_mark:|:white_check_mark:|@zacheadams|
 |Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
+|Z30  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z50  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 
