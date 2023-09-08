@@ -89,7 +89,7 @@ jobs:
 
   build-mac:
     macos:
-      xcode: 13.2.1
+      xcode: 14.2.0
     resource_class: medium
     steps:
       - checkout
