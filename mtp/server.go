@@ -827,7 +827,11 @@ func (s *LVServer) getLiveViewImgInner() (LiveView, error) {
 	raw := buf.Bytes()
 
 	lvr := liveViewRaw{}
-	err = binary.Read(bytes.NewReader(raw[8:hs]), binary.BigEndian, &lvr)
+	if s.model.QuirkNoHeader {
+		err = binary.Read(bytes.NewReader(raw[:hs]), binary.BigEndian, &lvr)
+	} else {
+		err = binary.Read(bytes.NewReader(raw[8:hs]), binary.BigEndian, &lvr)
+	}
 	if err != nil {
 		return LiveView{}, fmt.Errorf("failed to decode header")
 	}

@@ -49,6 +49,7 @@ type Model struct {
 	HeaderSize       int
 	ResolutionType   ResolutionType
 	QuirkSwitchMedia bool
+	QuirkNoHeader    bool
 }
 
 type ModelMap map[string]Model
@@ -142,8 +143,9 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D700": {
-		Name:       "D700",
-		HeaderSize: 64,
+		Name:          "D700",
+		HeaderSize:    64,
+		QuirkNoHeader: true,
 	},
 	"D750": {
 		Name:       "D750",
