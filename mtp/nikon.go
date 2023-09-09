@@ -143,9 +143,10 @@ var models = ModelMap{
 		HeaderSize: 384,
 	},
 	"D700": {
-		Name:          "D700",
-		HeaderSize:    64,
-		QuirkNoHeader: true,
+		Name:             "D700",
+		HeaderSize:       64,
+		QuirkSwitchMedia: true,
+		QuirkNoHeader:    true,
 	},
 	"D750": {
 		Name:       "D750",
