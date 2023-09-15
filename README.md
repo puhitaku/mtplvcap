@@ -259,7 +259,7 @@ To revert it back, follow the instruction:
 1. Install dependencies
 
     ```sh
-    brew install golang git
+    brew install golang git pkg-config
     ```
 
 1. Install XCode Command Line Tools with `xcode-select --install`
