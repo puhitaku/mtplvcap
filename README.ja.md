@@ -22,39 +22,40 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |D4S  |Yes          |                  |?                 |動作確認をお待ちしています！|
 |D5   |Yes          |                  |?                 |動作確認をお待ちしています！|
 |D6   |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|D90  |Yes          |:white_check_mark:|?                 |[@sachaos](https://github.com/sachaos)|
+|D90  |Yes          |:white_check_mark:|?                 |@sachaos|
 |D300 |Yes          |[#31](https://github.com/puhitaku/mtplvcap/issues/31)|?|追加の動作確認をお待ちしています！|
 |D300S|Yes          |                  |?                 |動作確認をお待ちしています！|
-|D500 |Yes          |:white_check_mark:|:white_check_mark:|[@yasuoeto](https://github.com/yasuoeto)|
-|D600 |Yes          |:white_check_mark:|?                 |[@ohtayo](https://github.com/ohtayo)|
+|D500 |Yes          |:white_check_mark:|:white_check_mark:|@yasuoeto|
+|D600 |Yes          |:white_check_mark:|?                 |@ohtayo|
 |D610 |Yes          |:white_check_mark:|?                 |@hazlitt|
 |D700 |Yes          |:white_check_mark:|?                 |@Jokler|
-|D750 |Yes          |:white_check_mark:|?                 ||
+|D750 |Yes          |:white_check_mark:|?                 |@anonymous|
 |D780 |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|D800 |Yes          |:white_check_mark:|?                 |[@pcjpnet](https://twitter.com/pcjpnet)|
-|D800E|Yes          |:white_check_mark:|?                 |[@Higomon](https://github.com/Higomon)|
-|D810 |Yes          |                  |?                 |動作確認をお待ちしています！|
+|D800 |Yes          |:white_check_mark:|?                 |@pcjpnet|
+|D800E|Yes          |:white_check_mark:|?                 |@Higomon|
+|D810 |Yes          |:white_check_mark:|                  |@GlassOnTin|
 |D850 |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |D3200|Yes          |:white_check_mark:|                  |@Ivisi|
-|D3300|Yes          |:white_check_mark:|                  |[@unasuke](https://github.com/unasuke)|
+|D3300|Yes          |:white_check_mark:|                  |@unasuke|
 |D3400|Yes          |:white_check_mark:|?                 |@chefaustin|
-|D3500|Yes          |:white_check_mark:|?                 |[@fedegratti](https://github.com/fedegratti)|
-|D5000|Yes          |:white_check_mark:|                  |[@rch850](https://github.com/rch850)|
-|D5100|Yes          |:white_check_mark:|                  |[@shigureanko](https://twitter.com/shigureanko)|
-|D5200|Yes          |:white_check_mark:|                  |[@ThatSameer](https://twitter.com/ThatSameer)|
+|D3500|Yes          |:white_check_mark:|?                 |@fedegratti|
+|D5000|Yes          |:white_check_mark:|                  |@rch850|
+|D5100|Yes          |:white_check_mark:|                  |@shigureanko|
+|D5200|Yes          |:white_check_mark:|                  |@ThatSameer|
 |D5300|Yes          |:white_check_mark:|                  |@puhitaku|
-|D5500|Yes          |:white_check_mark:|?                 |[@nasustim](https://github.com/nasustim)|
-|D5600|Yes          |:white_check_mark:|?                 |[@tadasv](https://github.com/tadasv)|
+|D5500|Yes          |:white_check_mark:|?                 |@nasustim|
+|D5600|Yes          |:white_check_mark:|?                 |@tadasv|
 |D7000|Yes          |:white_check_mark:|?                 |@takashi0314|
 |D7100|Yes          |:white_check_mark:|?                 |@TheMidlander|
-|D7200|Yes          |:white_check_mark:|?                 |[@br_spike_love](https://twitter.com/br_spike_love)|
+|D7200|Yes          |:white_check_mark:|?                 |@br_spike_love|
 |D7500|Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|Df   |Yes          |:white_check_mark:|?                 ||
-|Z5   |Yes          |:white_check_mark:|:white_check_mark:|[@ag-eitilt](https://github.com/ag-eitilt)|
+|Df   |Yes          |:white_check_mark:|?                 |@anonymous|
+|Z5   |Yes          |:white_check_mark:|:white_check_mark:|@ag-eitilt|
 |Z6   |Yes          |:white_check_mark:|:white_check_mark:|@ShadowXii|
 |Z6II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z7   |Yes          |:white_check_mark:|:white_check_mark:|@zacheadams|
 |Z7II |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|Z8   |Yes          |                  |?                 |動作確認をお待ちしています！|
 |Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
 |Z30  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z50  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
