@@ -60,8 +60,8 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 |Z9   |Yes          |:white_check_mark:|:white_check_mark:|@oxpa|
 |Z30  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
 |Z50  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|Z fc |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
-|Z f  |Yes          |[#75](https://github.com/puhitaku/mtplvcap/issues/75)|||
+|Zfc  |Yes          |:white_check_mark:|:white_check_mark:|@puhitaku|
+|Zf   |Yes          |[#75](https://github.com/puhitaku/mtplvcap/issues/75)|||
 
 
 <h4 id="hr">「高解像度」とは？</h4>
