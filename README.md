@@ -296,12 +296,8 @@ I strongly recommend you to compile by yourself for Linux distributions as Linux
 
     ```sh
     # If you have Nix installed, with Flakes enabled:
-    nix run github:r-k-b/mtplvcap?ref=add-nix-flake -- -debug server
+    nix run github:puhitaku/mtplvcap -- -debug server
     ```
-
-_Note: `github:r-k-b/mtplvcap?ref=add-nix-flake` to be replaced with
-`github:puhitaku/mtplvcap`, after these changes are merged to puhitaku's main branch._
-
 
 For non-[Nix] Linux, see the rest of the instructions:
 
