@@ -53,6 +53,7 @@
             echo ""
             echo "This is the dev shell for the MTPLVCAP project."
             echo ""
+            export GOROOT="${pkgs.go}/share/go"
             export MTPLVCAP_DEV_SHELL="entered"
           '';
         };
