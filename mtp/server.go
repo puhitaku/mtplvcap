@@ -55,9 +55,14 @@ type LVServer struct {
 	ctx context.Context
 }
 
-func NewLVServer(ctx context.Context, dev Device, maxResolution bool) *LVServer {
+func NewLVServer(ctx context.Context, dev Device, maxResolution bool, afInterval int64, lrFPS int64) *LVServer {
 	eg, egCtx := errgroup.WithContext(ctx)
 
+	afTicker := NewMutableTicker(time.Duration(afInterval) * time.Second)
+	if afInterval > 0 {
+		log.LV.Infof("NewLVServer: enable AF with interval: %d", afInterval)
+		afTicker.Start()
+	}
 	return &LVServer{
 		Frame:        nil,
 		newFrameChan: make(chan bool, 1),
@@ -73,11 +78,11 @@ func NewLVServer(ctx context.Context, dev Device, maxResolution bool) *LVServer 
 
 		maxResolution: maxResolution,
 
-		afInterval: atomic.NewInt64(5),
-		afTicker:   NewMutableTicker(5 * time.Second),
+		afInterval: atomic.NewInt64(afInterval),
+		afTicker:   afTicker,
 		afNowChan:  make(chan bool),
 
-		lrFPS: atomic.NewInt64(0),
+		lrFPS: atomic.NewInt64(lrFPS),
 
 		eg:  eg,
 		ctx: egCtx,
@@ -136,6 +141,21 @@ type InfoPayload struct {
 	Height int      `json:"height"`
 	FPS    int      `json:"fps"`
 	Frame  []byte   `json:"frame"`
+}
+
+func (s *LVServer) AFFocusAfter(after time.Duration) {
+	select {
+	case <-time.After(after):
+	case <-s.ctx.Done():
+		return
+	}
+
+	log.LV.Info("AFFocusAfter: focusing now")
+	select {
+	case s.afNowChan <- true:
+	case <-s.ctx.Done():
+		return
+	}
 }
 
 func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {

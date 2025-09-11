@@ -35,6 +35,9 @@ func main() {
 	vendorID := flag.String("vendor-id", "0x0", "VID of the camera to search (in hex), default=0x0 (all)")
 	productID := flag.String("product-id", "0x0", "PID of the camera to search (in hex), default=0x0 (all)")
 	maxResolution := flag.Bool("max-resolution", false, "change the resolution to the max (experimental)")
+	afInterval := flag.Int64("autofocus-interval", 0, "disable or change the autofocus interval in seconds, default=0 (disabled)")
+	afFocusNow := flag.Int("autofocus-on-startup", 0, "autofocus once on startup after X seconds, default=0 (disabled)")
+	fps := flag.Int64("fps", 0, "set frame limit, default=0 (disabled)")
 
 	flag.Parse()
 
@@ -101,7 +104,7 @@ func main() {
 		}
 	})
 
-	lvs := mtp.NewLVServer(ctx, dev, *maxResolution)
+	lvs := mtp.NewLVServer(ctx, dev, *maxResolution, *afInterval, *fps)
 	eg.Go(lvs.Run)
 
 	router := http.NewServeMux()
@@ -141,6 +144,10 @@ func main() {
 	})
 
 	log.Info("started")
+
+	if *afFocusNow > 0 {
+		go lvs.AFFocusAfter(time.Duration(*afFocusNow) * time.Second)
+	}
 
 	err = eg.Wait()
 	if err != nil {
