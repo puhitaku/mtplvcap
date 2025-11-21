@@ -364,10 +364,16 @@ mtplvcapとOBSを組み合わせることで、NikonのカメラをHDMIキャプ
 ```sh
 $ ./mtplvcap -help
 Usage of ./mtplvcap:
+  -autofocus-on-startup int
+        autofocus once on startup after X seconds, default=0 (disabled)
+  -autofocus-interval int
+        disable or change the autofocus interval in seconds, default=0 (disabled)
   -backend-go
         force gousb as libusb wrapper (not recommended)
   -debug string
         comma-separated list of debugging options: usb, data, mtp, server
+  -fps int
+        set frame limit, default=0 (disabled)
   -host string
         hostname: default = localhost, specify 0.0.0.0 for public access (default "localhost")
   -max-resolution
