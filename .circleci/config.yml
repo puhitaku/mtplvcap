@@ -23,7 +23,7 @@ aliases:
         only: /^v\d+\.\d+\.\d+(-rc\d+)?$/
   release-template: &release-template
     docker:
-      - image: circleci/golang:buster
+      - image: cimg/go:1.26.4
     resource_class: small
 
 
@@ -114,13 +114,13 @@ jobs:
 
   build-linux:
     docker:
-      - image: circleci/golang:buster
+      - image: cimg/go:1.26.4
     resource_class: small
     steps:
       - checkout
       - run:
           name: Install prerequisites
-          command: sudo apt install libusb-1.0.0-dev
+          command: sudo apt update && sudo apt install libusb-1.0-0-dev
       - run:
           name: Build
           environment:

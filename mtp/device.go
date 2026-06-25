@@ -13,6 +13,26 @@ type Device interface {
 	GetDevicePropValue(propCode uint32, dest interface{}) error
 	SetDevicePropValue(propCode uint32, src interface{}) error
 	ID() (ID, error)
+	// Connected reports whether the underlying USB device is still open and
+	// usable. It returns false once the device has been unplugged (the
+	// transaction layer closes the handle on a fatal USB error).
+	Connected() bool
+	// Close releases the interface and closes the device.
+	Close() error
+	// Done releases the underlying USB device reference. It must be called once
+	// the device is no longer needed (after Close) to avoid leaking a reference
+	// across reconnects.
+	Done()
+}
+
+// Opener (re)establishes a connection to a matching MTP device. It keeps the
+// long-lived USB context and the search criteria so it can be called
+// repeatedly to reconnect after the device has been unplugged and plugged
+// back in.
+type Opener interface {
+	// Open enumerates the bus, opens, claims and configures a matching MTP
+	// device, returning a device that is ready for transactions.
+	Open() (Device, error)
 }
 
 type sessionData struct {

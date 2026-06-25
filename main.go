@@ -61,31 +61,36 @@ func main() {
 
 	var dev mtp.Device
 
+	// opener is set only for backends that support automatic reconnection.
+	// When non-nil, LVServer uses it to re-open the device after an unplug.
+	var opener mtp.Opener
+
 	if *serverOnly {
 		log.Info("server-only mode is activated, skipping USB initialization")
-	} else {
-		if *backendGo {
-			ctx := gousb.NewContext()
-			defer ctx.Close()
+	} else if *backendGo {
+		ctx := gousb.NewContext()
+		defer ctx.Close()
 
-			devGo, err := mtp.SelectDeviceGoUSB(ctx, uint16(vid), uint16(pid))
-			if err != nil {
-				log.Fatalf("failed to detect MTP device: %s", err)
-			}
-			defer devGo.Close()
-			dev = devGo
-		} else {
-			devDirect, err := mtp.SelectDeviceDirect(uint16(vid), uint16(pid))
-			if err != nil {
-				log.Fatalf("failed to detect MTP devices: %v", err)
-			}
-			defer devDirect.Close()
-			dev = devDirect
+		devGo, err := mtp.SelectDeviceGoUSB(ctx, uint16(vid), uint16(pid))
+		if err != nil {
+			log.Fatalf("failed to detect MTP device: %s", err)
 		}
+		defer devGo.Close()
+		dev = devGo
 
 		if err = dev.Configure(); err != nil {
 			log.Fatalf("configure failed: %v", err)
 		}
+		log.Warning("automatic USB reconnection is not supported with -backend-go")
+	} else {
+		o := mtp.NewDirectOpener(uint16(vid), uint16(pid))
+		devDirect, err := o.Open()
+		if err != nil {
+			log.Fatalf("failed to detect MTP devices: %v", err)
+		}
+		defer devDirect.Close()
+		dev = devDirect
+		opener = o
 	}
 
 	eg, ctx := errgroup.WithContext(context.Background())
@@ -104,7 +109,7 @@ func main() {
 		}
 	})
 
-	lvs := mtp.NewLVServer(ctx, dev, *maxResolution, *afInterval, *fps)
+	lvs := mtp.NewLVServer(ctx, dev, opener, *maxResolution, *afInterval, *fps)
 	eg.Go(lvs.Run)
 
 	router := http.NewServeMux()

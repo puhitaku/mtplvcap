@@ -41,6 +41,7 @@ type LVServer struct {
 
 	model         Model
 	dev           Device
+	opener        Opener
 	mtpLock       sync.Mutex
 	dummy         bool
 	maxResolution bool
@@ -55,7 +56,7 @@ type LVServer struct {
 	ctx context.Context
 }
 
-func NewLVServer(ctx context.Context, dev Device, maxResolution bool, afInterval int64, lrFPS int64) *LVServer {
+func NewLVServer(ctx context.Context, dev Device, opener Opener, maxResolution bool, afInterval int64, lrFPS int64) *LVServer {
 	eg, egCtx := errgroup.WithContext(ctx)
 
 	afTicker := NewMutableTicker(time.Duration(afInterval) * time.Second)
@@ -73,8 +74,9 @@ func NewLVServer(ctx context.Context, dev Device, maxResolution bool, afInterval
 		controlClients: map[*websocket.Conn]bool{},
 		motionClients:  map[*MJPEGResponseWriter]bool{},
 
-		dev:   dev,
-		dummy: dev == nil,
+		dev:    dev,
+		opener: opener,
+		dummy:  dev == nil,
 
 		maxResolution: maxResolution,
 
@@ -292,6 +294,17 @@ func (s *LVServer) HandleSnapshot(w http.ResponseWriter, r *http.Request) {
 func (s *LVServer) Run() error {
 	defer func() {
 		_ = s.endLiveView()
+
+		// Close and release whichever device is currently active. After a
+		// reconnect s.dev is no longer the device main() holds, so main's
+		// deferred Close would otherwise leave this one open (and, on macOS,
+		// with the kernel driver detached).
+		s.mtpLock.Lock()
+		if s.dev != nil {
+			_ = s.dev.Close()
+			s.dev.Done()
+		}
+		s.mtpLock.Unlock()
 	}()
 
 	id, err := s.dev.ID()
@@ -335,7 +348,102 @@ func (s *LVServer) Run() error {
 	s.eg.Go(s.frameCaptorSakura)
 	s.eg.Go(s.workerBroadcastFrame)
 	s.eg.Go(s.workerBroadcastInfo)
+	s.eg.Go(s.workerReconnect)
 	return s.eg.Wait()
+}
+
+// workerReconnect watches the USB connection and, once the device has been
+// unplugged, keeps trying to re-open it so the live view resumes without
+// restarting the process. The other workers tolerate a missing device (they
+// log and retry), so reconnecting transparently swaps s.dev back in.
+func (s *LVServer) workerReconnect() error {
+	if s.dummy || s.opener == nil {
+		// server-only mode, or a backend that does not support reconnection.
+		return nil
+	}
+
+	tick := time.NewTicker(time.Second)
+	defer tick.Stop()
+
+	for {
+		select {
+		case <-s.ctx.Done():
+			return nil
+		case <-tick.C:
+		}
+
+		s.mtpLock.Lock()
+		if s.dev != nil && !s.dev.Connected() {
+			s.reconnectLocked()
+		}
+		s.mtpLock.Unlock()
+	}
+}
+
+// reconnectLocked tears down the dead device and keeps re-opening a matching
+// device until it succeeds or the context is cancelled. The caller must hold
+// mtpLock; it is held for the whole duration so no other worker touches s.dev
+// while it is being swapped. Without a device there is nothing useful for the
+// workers to do anyway, so blocking them on the lock is preferable to a flood
+// of "device is not open" errors.
+func (s *LVServer) reconnectLocked() {
+	log.LV.Warning("device disconnected; attempting to reconnect")
+
+	// Tear down the dead device: close the handle (usually already done by the
+	// transaction layer on the fatal USB error that triggered this) and release
+	// its libusb device reference so it is not leaked across reconnects.
+	_ = s.dev.Close()
+	s.dev.Done()
+
+	backoff := time.Second
+	for {
+		select {
+		case <-s.ctx.Done():
+			return
+		default:
+		}
+
+		dev, err := s.opener.Open()
+		if err != nil {
+			log.LV.Warningf("reconnect: device not ready yet: %s", err)
+			select {
+			case <-s.ctx.Done():
+				return
+			case <-time.After(backoff):
+			}
+			if backoff < 5*time.Second {
+				backoff += time.Second
+			}
+			continue
+		}
+
+		s.dev = dev
+		// Re-identify the model in case a different camera body was adopted, so
+		// the correct quirks are applied to live-view decoding.
+		s.refreshModel()
+		log.LV.Info("device reconnected")
+		return
+	}
+}
+
+// refreshModel re-matches the device model from the current device and updates
+// s.model. The caller must hold mtpLock. It is used after a reconnect because
+// the opener may have adopted a different camera body than before.
+func (s *LVServer) refreshModel() {
+	id, err := s.dev.ID()
+	if err != nil {
+		log.LV.Warningf("refreshModel: failed to get device identity: %s", err)
+		return
+	}
+
+	if model, ok := models.Match(id.Product); ok {
+		if model.Name != s.model.Name {
+			log.LV.Infof("refreshModel: model changed to %s", model.Name)
+		}
+		s.model = model
+	} else {
+		s.model = models.Generic()
+	}
 }
 
 func (s *LVServer) workerLV() error {

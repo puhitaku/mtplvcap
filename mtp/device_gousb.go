@@ -42,6 +42,21 @@ func (d *DeviceGoUSB) connected() bool {
 	return d.sendEP != nil
 }
 
+// Connected reports whether the device is open.
+//
+// NOTE: Unlike DeviceDirect, the gousb transaction layer returns a
+// Catastrophic error without tearing down the endpoints, so this does not yet
+// flip to false on unplug. Automatic reconnection is therefore not wired up
+// for the gousb backend (see main.go). A future change should close the device
+// on a Catastrophic error and add a GoUSBOpener.
+func (d *DeviceGoUSB) Connected() bool {
+	return d.connected()
+}
+
+// Done releases the underlying device. This is a no-op for the gousb backend
+// because gousb.Device.Close (called from Close) already releases the device.
+func (d *DeviceGoUSB) Done() {}
+
 // Close releases the interface, and closes the device.
 func (d *DeviceGoUSB) Close() error {
 	if !d.connected() {

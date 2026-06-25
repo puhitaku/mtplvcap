@@ -1,0 +1,121 @@
+# USB 再接続対応 — 実装ステップ・プラン（010-enhance）
+
+`prompts/000-plan-result` の設計に基づき、今回実装する具体的なステップを示す。
+コード中のコメント・ドキュメントは英語、本プラン文書は日本語で記述する。
+
+---
+
+## 0. 方針（000-plan-result からの要約）
+
+- `hanwen/usb` は hotplug 非対応なので、**`GetDeviceList` のポーリングによる再列挙**で再接続する。
+- libusb 固有の処理は `mtp/select.go`（＋ device 実装）に閉じ込め、`LVServer` は backend 非依存のまま
+  「切断を検出して再接続を駆動する」役割だけを持つ。
+- 3つの要素を追加する:
+  1. **`Opener`**: libusb コンテキストと探索条件を長寿命で保持し、呼ばれるたびに
+     「列挙→open→claim→Configure 済みの `Device`」を返す再利用可能オブジェクト。
+  2. **`Connected() bool`**: `Device` インターフェースに追加し、切断検出の判定に使う。
+  3. **再接続スーパーバイザ**: `LVServer` の常駐ゴルーチン。`Connected()==false` を観測したら
+     `mtpLock` を保持して旧デバイス破棄→Openerでポーリング再接続→ロック解放。
+
+---
+
+## 1. `Device` インターフェースの拡張（`mtp/device.go`）
+
+- `Device` に以下を追加:
+  - `Connected() bool` — 物理接続・ハンドルが生きているか。
+  - `Close() error` — 既存実装をインターフェースに公開し、`LVServer` から backend 非依存で呼べるようにする。
+- 新規 `Opener` インターフェースを定義:
+  ```go
+  type Opener interface {
+      // Open enumerates, opens, claims and configures a matching MTP device.
+      // It is safe to call repeatedly to (re)establish a connection.
+      Open() (Device, error)
+  }
+  ```
+
+## 2. `Connected()` の実装
+
+- `DeviceDirect.Connected()` → `d.h != nil`（`device_direct.go`）。
+  - 切断時は `RunTransaction` が `usb.Error` を検知して自分で `Close()`（`h=nil`）するため、自然に `false` になる。
+- `DeviceGoUSB.Connected()` → `d.connected()`（`device_gousb.go`）。
+
+## 3. `DirectOpener` の実装（`mtp/select.go`）
+
+- 構造体:
+  ```go
+  type DirectOpener struct {
+      ctx        *usb.Context // created once, reused for re-enumeration
+      vid, pid   uint16
+      wantSerial string       // serial of the previously-connected device (best-effort pinning)
+  }
+  func NewDirectOpener(vid, pid uint16) *DirectOpener
+  ```
+- `Open()` の手続き:
+  1. `ctx.GetDeviceList()` → `defer list.Done()`。
+  2. VID/PID で絞り込み、Nikon(`0x04b0`) を優先した順で候補（`*DeviceDirect`、各 `Ref()` 済み）を構築。
+  3. 採用しなかった候補は確実に `Unref` する（**既存 `SelectDeviceDirect` の参照リークを修正**）。
+  4. **Pass 1**（`wantSerial != ""` のとき）: シリアルが一致する個体だけを open→config→Configure し、成功したら採用。
+  5. **Pass 2**: 一致個体が無ければ、先頭から open できた個体を採用し、そのシリアルを `wantSerial` に記録。
+  6. 採用個体について `GetConfiguration`/`SetConfiguration` の整合と `Timeout=3000` を設定し、`Configure()`（OpenSession）まで行う。
+- 既存 `SelectDeviceDirect(vid, pid)` は `NewDirectOpener(...).Open()` 相当の薄いラッパとして残す
+  （ただしテスト互換のため「Configure はしない」従来契約を維持。詳細は実装時に調整）。
+
+> 補足: コンテキストを使い回すことで「再列挙のためのコンテキストが無い」(000-plan B) と
+> 「旧 `*usb.Device` を再オープンしてしまう」(000-plan D) を解消する。
+
+## 4. `LVServer` への再接続スーパーバイザ（`mtp/server.go`）
+
+- フィールド追加: `opener Opener`。
+- `NewLVServer(ctx, dev, opener, maxResolution, afInterval, lrFPS)` に `opener` を追加。
+- `Run()` で `s.eg.Go(s.workerReconnect)` を起動。
+- `workerReconnect`:
+  - `s.dummy || s.opener == nil` なら何もしない（server-only / gousb は対象外）。
+  - 1秒間隔の ticker で、`mtpLock` を取得し `s.dev.Connected()` を確認。`false` なら `reconnectLocked()`。
+- `reconnectLocked`（`mtpLock` 保持前提）:
+  - 旧 `s.dev.Close()`（冪等）→ `ctx` を見ながらバックオフ付きで `opener.Open()` を再試行。
+  - 成功したら `s.dev = dev`（ロック保持中に差し替え）。`ctx.Done()` で中断可能。
+- **ロック設計**: 再接続中は `mtpLock` を保持し続け、各ワーカ（`workerLV`/`frameCaptorSakura` 等）は
+  ロック待ちでブロックさせる。デバイスが無い間は何もできないため、エラーログ連発より望ましい。
+  `ctx.Done()` は別経路なので終了応答性は保たれる。
+- 既存ワーカは**無改変**。エラー時に `continue`/`sleep` する現挙動と `mtpLock` 待ちで、デバイス差し替えを透過吸収する。
+
+## 5. `main.go` の変更
+
+- 既定（Direct）バックエンド:
+  ```go
+  o := mtp.NewDirectOpener(uint16(vid), uint16(pid))
+  dev, err = o.Open()           // includes Configure()
+  ...
+  opener = o
+  ```
+- `-backend-go`（gousb）: 従来どおり `SelectDeviceGoUSB` + `Configure`。`opener` は `nil`（自動再接続は対象外、ログで明示）。
+- `NewLVServer(ctx, dev, opener, ...)` に `opener` を渡す。
+
+## 6. gousb バックエンドの扱い
+
+- `Connected()` のみ実装（インターフェース充足）。
+- 自動再接続は**本回では対象外**（`opener == nil`）。理由は 000-plan §2.3 のとおり
+  `DeviceGoUSB.RunTransaction` が `Catastrophic` を返すだけで teardown せず `connected()` が落ちないため。
+- 次段階で `Catastrophic` 時の teardown と `GoUSBOpener` を追加する旨をコメントで明記。
+
+---
+
+## 7. 検証
+
+- `pkgconf` + libusb を用意し `go build ./... && go vet ./...` が通ること。
+- 実機があれば: Live View 配信中に抜線→数秒後に挿線で、プロセス再起動なしに復帰すること。
+  ログに `device disconnected; attempting to reconnect` → `device reconnected` が出ること。
+- 連続抜き差しでの参照リーク（`Unref` 漏れ）が無いこと。
+- マルチエージェントによる差分レビュー（libusb 整合 / デッドロック / 参照・ハンドルリーク / ビルド整合）を実施し、指摘を反映。
+
+---
+
+## 8. コミット分割（セマンティック単位）
+
+1. `Device` インターフェース拡張（`Connected()`/`Close()` 公開、`Opener` 定義）と各 `Connected()` 実装。
+2. `DirectOpener` 実装と `SelectDeviceDirect` のラッパ化（参照リーク修正含む）。
+3. `LVServer` 再接続スーパーバイザ（`workerReconnect`/`reconnectLocked`、`NewLVServer` 署名変更）。
+4. `main.go` 配線（Opener 生成・受け渡し）。
+5. プラン文書（`prompts/010-enhance`, `prompts/010-enhance-result` ほか）。
+
+各コミットはプロンプト（`prompts/`）とともに記録する。
