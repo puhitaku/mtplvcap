@@ -1,0 +1,280 @@
+# USB 再接続対応 — 検討結果と実装プラン
+
+対象: `mtplvcap`（NikonカメラのMTP Live View画像をブラウザ／疑似Webカメラへ配信するツール）
+
+目的: USBが一度抜けても、`mtplvcap` を再起動せずに自動で再接続できるようにする。
+あわせて、現状のlibusbアタッチ手続きがlibusbの作法に則っているかを検証する。
+
+---
+
+## 1. 現状のアーキテクチャと切断時の挙動
+
+### 1.1 パッケージ／データフロー
+
+- `main.go`
+  - フラグ解析後、バックエンドを選択してデバイスを開く。
+    - デフォルト: `mtp.SelectDeviceDirect()`（`hanwen/usb` 経由 = libusb 直叩き）
+    - `-backend-go`: `mtp.SelectDeviceGoUSB()`（`google/gousb` 経由）
+  - `dev.Configure()` でMTPセッションを開く。
+  - `defer dev.Close()` を登録。
+  - `errgroup` を作り、シグナルハンドラ・`LVServer.Run`・HTTPサーバを起動。
+  - いずれかのゴルーチンがエラーを返すと `eg.Wait()` が返り、`main` が終了する。
+
+- `mtp.Device` インターフェース（`mtp/device.go`）
+  - `Configure / RunTransaction(WithNoParams) / GetDevicePropDesc / Get|SetDevicePropValue / ID` を定義。
+  - `DeviceDirect`（`device_direct.go`）と `DeviceGoUSB`（`device_gousb.go`）が実装。
+
+- `mtp.LVServer`（`mtp/server.go`）
+  - `s.dev`（`Device`）を `s.mtpLock`（`sync.Mutex`）で保護しつつ全MTP通信を行う。
+  - ワーカ群: `workerLV` / `workerAF` / `frameCaptorSakura` / `workerBroadcastFrame` / `workerBroadcastInfo`。
+  - 各ワーカはエラーを「ログに出して `continue`／`sleep`」するだけで、ループ自体は回り続ける。
+
+### 1.2 切断が起きると何が起きるか（根本原因）
+
+1. USBが抜けると、`BulkTransfer` が `usb.Error`（`ERROR_NO_DEVICE = -4`、状況により `ERROR_IO`/`ERROR_PIPE`）を返す。
+2. `DeviceDirect.RunTransaction`（`device_direct.go:329`）は、エラーが `usb.Error` または `SyncError` のとき
+   「致命的」と判断して **自分で `d.Close()` を呼ぶ**。`Close()` は `d.h = nil` にする。
+3. 以降、`d.h == nil` なので、すべての `RunTransaction` は
+   `"mtp: cannot run operation ..., device is not open"` という**ただの `fmt` エラー**（`usb.Error` ではない）を返すだけになる。
+4. `LVServer` のワーカはこのエラーを警告ログに出して回り続ける。**誰も `d` を開き直さない**。
+   - その結果、「再起動するまで再接続が走らない」という現象になる（ユーザ報告どおり）。
+
+つまり、**切断検出の入口（`d.h == nil` になる）は既に存在する**が、
+**再オープンを行う主体が存在しない**のが本質。
+
+---
+
+## 2. libusbの作法に照らした現状実装の検証
+
+`hanwen/usb`（libusbの薄いcgoバインディング）が提供するAPIを確認したうえで、現状手続きの妥当性を評価した。
+
+### 2.1 重要な前提: hotplug は使えない
+
+- `hanwen/usb` は `libusb_hotplug_register_callback` を**バインドしていない**
+  （`NewContext / GetDeviceList / Ref / Unref / Open / Close / ClaimInterface / BulkTransfer / Reset / Detach|AttachKernelDriver` 等のみ）。
+- そもそも libusb の hotplug はプラットフォーム依存（Windowsのデフォルトバックエンドや一部環境では非対応）。
+- → **再接続は「ポーリングによる再列挙（`GetDeviceList` の定期実行）」で実装するのが妥当**。
+  これは本リポジトリの既存スタイルとも一致する。
+
+### 2.2 現状のアタッチ手続きの評価（`SelectDeviceDirect` / `Open` / `claim` / `Close`）
+
+おおむね libusb の流儀に沿っているが、再接続を見据えると以下の点が問題になる。
+
+| # | 観点 | 現状 | 評価 |
+|---|------|------|------|
+| A | デバイス列挙の参照管理 | `GetDeviceList` → 採用デバイスを `d.Ref()`、`defer l.Done()` でリスト解放（`select.go:123,143`） | **正しい**。「保持するデバイスをrefし、リストはfreeする」という libusb の正攻法。 |
+| B | コンテキストの寿命 | `usb.NewContext()` を `SelectDeviceDirect` のローカル変数で生成し、保持も `Exit()` もしない（`select.go:136`） | **要改善**。再接続で再列挙するにはコンテキストが必要。libusbは「アプリ寿命で1つのcontextを使い回す」のが定石。長寿命のオーナに保持すべき。 |
+| C | デバイス参照の解放 | `Done()`（`d.dev.Unref()`）は定義済みだが、`main.go` は `Close()` しか呼ばない | プログラム終了時の1個のリークは無害だが、**再接続ループでは毎回 stale な `*usb.Device` を `Unref` しないと参照がリークする**。再接続前に必ず旧デバイスを `Unref` する必要あり。 |
+| D | 切断後の再オープン経路 | `Configure()` は `d.h == nil` なら `Open()` するが、`Open()` は**古い `d.dev`** に対して `d.dev.Open()` する（`device_direct.go:132`） | **要改善**。物理的に抜き差しすると旧 `*usb.Device` は無効。`d.dev` を更新せずに再オープンすると `ERROR_NO_DEVICE`。**再列挙して新しい `*usb.Device` を取り直す必要がある**（ここが再接続実装の核心）。 |
+| E | 切断後の `Close()` の挙動 | `CloseSession` トランザクション→失敗で `Reset()`→`ReleaseInterface`→`AttachKernelDriver`→`h.Close()`。すべてエラーは握りつぶし | デバイス消失時はこれらが軒並み失敗するが**害はない**（ログが煩い程度）。再接続経路では軽量なteardownにしてもよい。 |
+| F | 状態フラグの取り回し | `Close()` は `d.claimed` / `d.detached` をリセットしない | 同一structを使い回して再オープンすると微妙。**再接続時は「新しい `DeviceDirect` を生成」する設計にすればフラグ問題は自然に回避できる**（D・Fの両方を一挙に解決）。 |
+| G | macOS Venturaのデタッチ | `Open()` 内で毎回判定して `DetachKernelDriver`（`device_direct.go:142-167`） | 再接続でも `Open()` 経由で再実行されるので、新規structなら問題なし。 |
+
+### 2.3 gousb バックエンド（`-backend-go`）の差異
+
+- `DeviceGoUSB.RunTransaction`（`device_gousb.go:254`）は致命的エラー時に `Catastrophic` を**返すだけで、エンドポイントのteardownをしない**。
+  → 切断後も `connected()` が `true` のままになり、`DeviceDirect` のような自己クローズが起きない。
+- gousb 自体もこのバージョンでは hotplug を露出していない。再接続は `ctx.OpenDevices` の再実行が必要。
+- 本ツールの推奨／デフォルトは Direct バックエンドなので、**まず Direct を完成させ、gousb は同等のteardownを足す**方針が現実的。
+
+### 2.4 検証の結論
+
+- 初回アタッチ手続き（列挙→ref→open→claim→（macなら）detach→session）は **libusb的に概ね正しい**。
+- ただし**再接続を成立させるには次の3点が不足**している:
+  1. 再列挙のための **libusbコンテキストを長寿命で保持** する（B）。
+  2. 再接続時に **旧 `*usb.Device` を `Unref` し、再列挙で新しいデバイスを取得** する（C・D）。
+  3. 切断を検出して **再オープンを駆動する主体（スーパーバイザ）** を用意する（§1.2）。
+
+---
+
+## 3. 再接続エンハンスのプラン
+
+### 3.1 設計方針
+
+Goパッケージ構造を尊重し、**libusb固有の詳細を `mtp/select.go`（＋各 device 実装）に閉じ込め、
+`LVServer` は backend 非依存のまま「再接続を駆動する」役割だけ持たせる**。
+
+3つの要素を導入する。
+
+1. **Opener（デバイス生成器）** — libusbコンテキストと探索条件（VID/PID、可能ならシリアル番号）を保持し、
+   呼ばれるたびに「列挙→open→claim→Configure 済みの `Device`」を返す再利用可能なオブジェクト。
+   - コンテキストを1つだけ保持（§2.2 B を解消）。
+   - 内部で旧デバイスの `Unref` と新規 `DeviceDirect` の生成を行う（C・D・F を解消）。
+2. **切断検出** — `Device` インターフェースに `Connected() bool` を追加。
+   `DeviceDirect` は `d.h != nil`、`DeviceGoUSB` は `d.connected()` を返す。
+   `DeviceDirect` は切断時に自己クローズするので、`Connected()` が自然に `false` へ落ちる（§1.2）。
+3. **再接続スーパーバイザ** — `LVServer` に常駐ゴルーチンを追加。`Connected()` を監視し、
+   `false` を観測したら `mtpLock` を取得して旧デバイスを破棄し、Openerでポーリング再接続→再初期化→ロック解放。
+
+### 3.2 型・インターフェースの変更
+
+```go
+// mtp/device.go
+type Device interface {
+    // 既存メソッド ...
+    Connected() bool   // 追加: 物理接続・ハンドルが生きているか
+    Close() error      // 既存だがインターフェースに含めて backend 非依存に
+    ID() (ID, error)
+}
+
+// 新規: backend 非依存のデバイス生成器
+type Opener interface {
+    // 列挙→Open→Claim→Configure 済みの Device を返す。
+    // 直前に使っていた Device があれば teardown/Unref してから列挙する。
+    Open() (Device, error)
+}
+```
+
+- `DirectOpener`（`select.go`）
+  - フィールド: `ctx *usb.Context`（一度だけ生成）, `vid, pid uint16`, `wantSerial string`。
+  - `Open()`:
+    1. `ctx.GetDeviceList()` → `defer list.Done()`。
+    2. VID/PID（指定時）で絞り、**可能なら直前接続時のシリアル番号で同一個体を優先**（複数カメラ対策）。
+       初回は `wantSerial == ""` なので従来どおり最初の一致を採用。
+    3. 既存の `candidateFromDeviceDescriptor` を再利用して `DeviceDirect`（新規struct）を構築。採用デバイスは `Ref()`。
+    4. `dev.Open()` → `dev.Configure()`。
+    5. 初回成功時に `dev.ID()` のシリアルを `wantSerial` に記録（次回の同定に使う）。
+- `GoUSBOpener` も同様に `*gousb.Context` を保持して `ctx.OpenDevices` を再実行。
+
+> 既存の `SelectDeviceDirect` / `SelectDeviceGoUSB` は `DirectOpener.Open()` / `GoUSBOpener.Open()` の薄いラッパとして残す（後方互換）。
+
+### 3.3 main.go の変更
+
+```go
+// 擬似コード
+opener := mtp.NewDirectOpener(uint16(vid), uint16(pid))   // or NewGoUSBOpener(ctx, ...)
+dev, err := opener.Open()                                  // 初回接続（従来の Select+Configure 相当）
+...
+lvs := mtp.NewLVServer(ctx, dev, opener, *maxResolution, *afInterval, *fps)
+```
+
+- `NewLVServer` に `opener Opener` を追加で渡す（`dev == nil` のserver-onlyモードでは `opener == nil` でOK）。
+- `defer dev.Close()` は最後に接続中のデバイスを閉じる役割になる。
+  Opener側で世代交代したデバイスは Opener/スーパーバイザが責任を持って閉じる。
+
+### 3.4 LVServer 側のスーパーバイザ
+
+```go
+// server.go（擬似コード）
+func (s *LVServer) workerReconnect() error {
+    if s.dummy || s.opener == nil {
+        return nil
+    }
+    tick := time.NewTicker(500 * time.Millisecond)
+    defer tick.Stop()
+    for {
+        select {
+        case <-s.ctx.Done():
+            return nil
+        case <-tick.C:
+        }
+        if s.dev != nil && s.dev.Connected() {
+            continue // 正常
+        }
+        s.reconnect()
+    }
+}
+
+func (s *LVServer) reconnect() {
+    s.mtpLock.Lock()
+    defer s.mtpLock.Unlock()
+
+    // 二重確認（ロック獲得待ちの間に他経路で復帰していないか）
+    if s.dev != nil && s.dev.Connected() {
+        return
+    }
+    log.LV.Warning("device disconnected; trying to reconnect...")
+
+    // 旧デバイスの後始末（Unref 含む。§2.2 C/D）
+    if s.dev != nil {
+        _ = s.dev.Close()
+        // DirectOpener.Open() 内で旧デバイスを Unref する設計なら Opener に委譲してもよい
+    }
+
+    backoff := time.Second
+    for {
+        select {
+        case <-s.ctx.Done():
+            return
+        default:
+        }
+        dev, err := s.opener.Open()   // 列挙→open→claim→Configure
+        if err != nil {
+            log.LV.Warningf("reconnect: still not available: %s", err)
+            time.Sleep(backoff)
+            if backoff < 5*time.Second {
+                backoff += time.Second   // 軽い指数/線形バックオフ
+            }
+            continue
+        }
+        s.dev = dev
+        s.reinitAfterReconnect()      // モデル再マッチ不要、ISO/FN再取得など
+        log.LV.Info("reconnected")
+        return
+    }
+}
+```
+
+要点:
+- **`mtpLock` を再接続中ずっと保持**する。デバイスが無い間はワーカは何もできないので、
+  ロックで待たせる方が「device not open エラーの連発ログ」よりクリーン。`ctx.Done()` は別経路なので終了応答性は保たれる。
+- **再初期化は最小限**。`Configure()`（= `OpenSession`、tid=1にリセット）が新セッションを張るので、
+  あとは `workerLV` が Live View 未起動を検知して `StartLiveView` を打ち直す。モデルは既知。
+  ISO/FN リストは任意で再取得（`s.getISOs/getFNs` は内部で `mtpLock` を取るので、ロック外 or 非ロック版で呼ぶよう注意）。
+- ワーカ群（`workerLV` / `frameCaptorSakura` 等）は**現状のまま**でよい。
+  エラー時に `continue`/`sleep` する既存挙動と、`mtpLock` 待ちにより、デバイス差し替えを透過的に吸収できる。
+
+### 3.5 切断検出の補強（任意・第2段階）
+
+`Connected()` ポーリングは Direct では確実だが、より即応にしたい場合・gousb 対応のため:
+- 致命的USBエラー（`usb.Error` / `Catastrophic`）を検出したワーカが
+  `s.disconnectChan <- struct{}{}` を投げ、スーパーバイザがそれをトリガに即再接続する push 方式を追加。
+- gousb は `RunTransaction` の `Catastrophic` 経路で `Close()`（teardown）してから返すよう修正し、
+  `Connected()`（`d.connected()`）が `false` に落ちるようにする。
+
+### 3.6 UI への通知（任意）
+
+`InfoPayload` に `Connected bool` を足し、`workerBroadcastInfo` で配信。
+フロントエンドで「カメラ切断中／再接続待ち」を表示すると体験が良い（必須ではない）。
+
+---
+
+## 4. 実装ステップ（推奨順）
+
+1. **`Device` に `Connected()` を追加**（`DeviceDirect`=`h!=nil`、`DeviceGoUSB`=`connected()`）。インターフェースにも追加。
+2. **`Opener` 導入**: `select.go` に `DirectOpener`（コンテキスト保持・列挙・Unref・新規struct生成・シリアル同定）を実装。
+   `SelectDeviceDirect` を `DirectOpener.Open()` のラッパに置き換え。
+3. **`main.go`**: Opener を生成し、初回 `opener.Open()` で接続。`NewLVServer` に Opener を渡す。
+4. **`LVServer`**: `opener` フィールド／`workerReconnect`／`reconnect`／`reinitAfterReconnect` を追加し、`Run` で `s.eg.Go(s.workerReconnect)`。
+5. **動作確認**（§5）。
+6. （第2段階）push 方式の切断シグナルと **gousb の teardown 修正**、UI通知。
+
+各ステップは概ね独立してビルド・テスト可能。1→2→3→4 の順で段階的にマージできる。
+
+---
+
+## 5. 検証方法
+
+- 実機（Nikon）で Live View 配信中に **USBケーブルを抜く → 数秒後に挿し直す** を繰り返し、
+  プロセスを再起動せずに配信が復帰することを確認。
+- ログで `device disconnected; trying to reconnect...` → `reconnected` の遷移を確認。
+- 連続抜き差しでの **参照リーク有無**（`Unref` 漏れ）を確認（長時間ループでメモリ/FD増加がないこと）。
+- macOS Ventura 以降での **kernel driver 再デタッチ** が再接続後も効くこと（`Open()` 経由で再実行）。
+- `-backend-go` でも最低限クラッシュしないこと（teardown 修正前は再接続非対応の旨をログ表示でも可）。
+- 複数カメラ接続時に、**再接続で同じ個体（シリアル一致）**を掴むこと。
+
+---
+
+## 6. リスク・留意点
+
+- **デバイス同定**: 再接続時にVID/PIDだけで掴むと別個体を開く恐れ。シリアル番号での同定を推奨（取得できない機種はVID/PIDフォールバック）。
+- **ロック保持時間**: 再接続中は `mtpLock` を握りっぱなしになる。`HandleControl` 由来の `setISO/setFN` 等は
+  再接続完了までブロックする（=意図どおり）。`ctx.Done()` は別経路なので終了応答性に影響なし。
+- **`getISOs/getFNs` の再ロック**: これらは内部で `mtpLock.Lock()` する。`reconnect()`（ロック保持中）から呼ぶと
+  デッドロックするため、非ロック版（`*Inner`）を切り出して使うこと。
+- **gousb の非対称性**: §2.3 のとおり Direct を先行実装し、gousb は別PRで teardown を揃える。
+- **コンテキスト寿命**: Opener が保持する `usb.Context` はプロセス終了まで生かす（途中 `Exit()` しない）。
+
+---
+
+（このファイルはプラン提示用。コミットはしない。）
