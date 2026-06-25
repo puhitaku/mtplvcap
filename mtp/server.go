@@ -93,8 +93,9 @@ func NewLVServer(ctx context.Context, dev Device, maxResolution bool, afInterval
 
 func (s *LVServer) HandleStream(w http.ResponseWriter, r *http.Request) {
 	ws, err := s.upgrader.Upgrade(w, r, nil)
+	log.LV.Infof("HandleStream %s: websocket client connected", ws.RemoteAddr())
 	if err != nil {
-		log.LV.Errorf("HandleStream: failed to upgrade: %s", err)
+		log.LV.Errorf("HandleStream %s: failed to upgrade: %s", ws.RemoteAddr(), err)
 	}
 	defer ws.Close()
 
@@ -103,7 +104,7 @@ func (s *LVServer) HandleStream(w http.ResponseWriter, r *http.Request) {
 		var mes struct{}
 		err := ws.ReadJSON(&mes)
 		if err != nil {
-			log.LV.Errorf("HandleStream: failed to read a message: %s", err)
+			log.LV.Errorf("HandleStream %s: failed to read a message: %s", ws.RemoteAddr(), err)
 			s.unregisterStreamClient(ws)
 			return
 		}
@@ -160,8 +161,9 @@ func (s *LVServer) AFFocusAfter(after time.Duration) {
 
 func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {
 	ws, err := s.upgrader.Upgrade(w, r, nil)
+	log.LV.Infof("HandleControl %s: websocket client connected", ws.RemoteAddr())
 	if err != nil {
-		log.LV.Errorf("HandleControl: failed to upgrade: %s", err)
+		log.LV.Errorf("HandleControl %s: failed to upgrade: %s", ws.RemoteAddr(), err)
 	}
 	defer ws.Close()
 
@@ -181,7 +183,7 @@ func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {
 		var p ControlPayload
 		err := ws.ReadJSON(&p)
 		if err != nil {
-			log.LV.Errorf("HandleControl: failed to read a message: %s", err)
+			log.LV.Errorf("HandleControl %s: failed to read a message: %s", ws.RemoteAddr(), err)
 			s.unregisterControlClient(ws)
 			return
 		}
@@ -190,10 +192,10 @@ func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {
 			setInfo(p.AFInterval, nil)
 
 			if *p.AFInterval > 0 {
-				log.LV.Debug("HandleControl: enable AF")
+				log.LV.Debugf("HandleControl %s: enable AF", ws.RemoteAddr())
 				s.afTicker.Start()
 			} else {
-				log.LV.Debug("HandleControl: disable AF")
+				log.LV.Debugf("HandleControl %s: disable AF", ws.RemoteAddr())
 				s.afTicker.Stop()
 				continue
 			}
@@ -201,13 +203,13 @@ func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {
 			s.afInterval.Store(*p.AFInterval)
 			s.afTicker.SetInterval(time.Duration(*p.AFInterval) * time.Second)
 			if err != nil {
-				log.LV.Debugf("HandleControl: failed to set interval: %d", *p.AFInterval)
+				log.LV.Debugf("HandleControl %s: failed to set interval: %d", ws.RemoteAddr(), *p.AFInterval)
 			}
-			log.LV.Debugf("HandleControl: set AF interval: %d", *p.AFInterval)
+			log.LV.Debugf("HandleControl %s: set AF interval: %d", ws.RemoteAddr(), *p.AFInterval)
 		}
 
 		if p.AFFocusNow != nil && *p.AFFocusNow {
-			log.LV.Debug("HandleControl: focus now")
+			log.LV.Debugf("HandleControl %s: focus now", ws.RemoteAddr())
 			select {
 			case s.afNowChan <- true:
 			default:
@@ -217,26 +219,26 @@ func (s *LVServer) HandleControl(w http.ResponseWriter, r *http.Request) {
 		if p.LRFPS != nil {
 			setInfo(nil, p.LRFPS)
 			if *p.LRFPS > 0 {
-				log.LV.Debugf("HandleControl: set rate limit: %d", *p.LRFPS)
+				log.LV.Debugf("HandleControl %s: set rate limit: %d", ws.RemoteAddr(), *p.LRFPS)
 			} else {
-				log.LV.Debug("HandleControl: disable rate limit")
+				log.LV.Debugf("HandleControl %s: disable rate limit", ws.RemoteAddr())
 			}
 			s.lrFPS.Store(*p.LRFPS)
 		}
 
 		if p.ISO != nil {
-			log.LV.Debugf("HandleControl: set ISO: %d", *p.ISO)
+			log.LV.Debugf("HandleControl %s: set ISO: %d", ws.RemoteAddr(), *p.ISO)
 			err = s.setISO(*p.ISO)
 			if err != nil {
-				log.LV.Errorf("HandleControl: failed to set ISO: %s", err)
+				log.LV.Errorf("HandleControl %s: failed to set ISO: %s", ws.RemoteAddr(), err)
 			}
 		}
 
 		if p.FN != nil {
-			log.LV.Debugf("HandleControl: set f-number: %s", *p.FN)
+			log.LV.Debugf("HandleControl %s: set f-number: %s", ws.RemoteAddr(), *p.FN)
 			err = s.setFN(*p.FN)
 			if err != nil {
-				log.LV.Errorf("HandleControl: failed to set f-number: %s", err)
+				log.LV.Errorf("HandleControl %s: failed to set f-number: %s", ws.RemoteAddr(), err)
 			}
 		}
 	}

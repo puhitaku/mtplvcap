@@ -122,6 +122,7 @@ func main() {
 	router.HandleFunc("/control", lvs.HandleControl)
 	router.Handle("/assets/", http.FileServer(public.Root))
 
+	log.Infof("server started on http://%s:%d", *host, *port)
 	srv := http.Server{
 		Addr:    fmt.Sprintf("%s:%d", *host, *port),
 		Handler: logging.HTTPLogHandler(router),
