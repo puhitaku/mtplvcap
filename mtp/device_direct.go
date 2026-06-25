@@ -43,6 +43,13 @@ type DeviceDirect struct {
 	session *sessionData
 }
 
+// Connected reports whether the device handle is still open. The transaction
+// layer closes the handle (setting d.h to nil) when it hits a fatal USB error
+// such as ERROR_NO_DEVICE, so this flips to false once the camera is unplugged.
+func (d *DeviceDirect) Connected() bool {
+	return d.h != nil
+}
+
 func (d *DeviceDirect) fetchMaxPacketSize() int {
 	return d.dev.GetMaxPacketSize(d.fetchEP)
 }
@@ -94,8 +101,12 @@ func (d *DeviceDirect) Close() error {
 	return err
 }
 
-// Done releases the libusb device reference.
+// Done releases the libusb device reference. It is idempotent so it is safe to
+// call alongside Close during teardown.
 func (d *DeviceDirect) Done() {
+	if d.dev == nil {
+		return
+	}
 	d.dev.Unref()
 	d.dev = nil
 }
